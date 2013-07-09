@@ -1,0 +1,110 @@
+#!/usr/bin/env ruby
+#encoding: utf-8
+#--
+# Copyright(C) 2013 Giovanni Capuano <webmaster@giovannicapuano.net>
+#
+# This file is part of Botémon.
+#
+# Botémon is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Botémon is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Botémon.  If not, see <http://www.gnu.org/licenses/>.
+#++
+
+require 'botemon'
+
+abort 'Usage: botemon <bot_name> <bot_password> <server> <channels>' if ARGV.length < 4
+
+Cinch::Bot.new {
+  configure do |c|
+    c.nick     = ARGV[0]
+    c.realname = ARGV[0]
+    c.user     = ARGV[0]
+    c.password = ARGV[1]
+    c.server   = ARGV[2]
+    c.channels = ARGV.drop(3).map { |c| "\##{c}" }
+    
+    @storage        = Storage.new './cache.db'
+    @pokemon_trivia = nil
+    @players        = []
+    @trivia_owner   = ''
+  end
+
+  on :message, /^pkmn (.+)/ do |m, name|
+    @storage = Storage.new('./cache.db') unless @storage
+    
+    name = Pokedex.id2name(name) if name.numeric?
+    
+    if name == nil
+      m.reply 'Pokémon not found.'
+    else
+      pokemon = Pokedex.get(name, @storage)
+      m.reply pokemon ? pokemon.to_s : 'Pokémon not found.'
+    end
+  end
+
+  on :message, /^pktrivia$/ do |m|
+    @storage = Storage.new('./cache.db') unless @storage
+    
+    if @pokemon_trivia != nil
+      m.reply 'Other players are playing, wait until they finish.'
+      m.reply @pokemon_trivia.clues
+    else
+      @pokemon_trivia = Pokedex.get Pokedex.id2name(Random.new.rand(1..649)), @storage
+      @trivia_owner   = m.user.nick
+      
+      m.reply @pokemon_trivia.clues
+      m.reply "You have 30 seconds. Try to say which Pokémon is this!"
+      
+      Timer(60) {
+        if @pokemon_trivia != nil
+          m.reply "Time expired. The secret Pokémon is #{@pokemon_trivia.name}!"
+          @pokemon_trivia = nil
+        end
+      }
+    end
+  end
+
+  on :message, /^pkstop$/ do |m|
+    if @pokemon_trivia != nil && (m.user.nick == 'mirkosp' || m.user.nick == 'RoxasShadowRS' || m.user.nick == @trivia_owner)
+      @pokemon_trivia = nil
+      @trivia_owner   = ''
+      m.reply "Game aborted by #{m.user.nick}."
+    else
+      m.reply "Only ops can stop the game. #{m.user.nick} GTFO."
+    end
+  end
+
+  on :message, /^pktrivia (.+)$/ do |m, pokemon|
+    if @pokemon_trivia == nil
+      m.reply 'You have to start the game before to play.'
+    elsif pokemon.downcase == @pokemon_trivia.name.downcase
+      m.reply "Right, #{m.user.nick} won!"
+      @pokemon_trivia = nil
+    else
+      m.reply "Nope, #{m.user.nick} was wrong."
+    end
+  end
+
+  on :message, /^pkdebug$/ do |m|
+    if @pokemon_trivia == nil
+      m.reply 'Game not started.'
+    elsif m.user.nick == 'mirkosp' || m.user.nick == 'RoxasShadowRS'
+      m.reply @pokemon_trivia.name
+    else
+      m.reply 'VAI A ZAPPARE LA TERRA'
+    end
+  end
+
+  on :message, /^pkversion$/ do |m|
+    m.reply Botemon::version
+  end
+}.start
