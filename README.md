@@ -2,6 +2,8 @@
 
 Datas are got from Smogon and then cached. Convertion id -> name is performed by PokémonDB.
 
+`Installation: [sudo] gem install botemon`
+
 `Usage: botemon <bot_name> <bot_password> <server> <channels>`
 
 
