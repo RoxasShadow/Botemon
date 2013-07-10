@@ -11,6 +11,9 @@ Datas are got from Smogon and then cached. Convertion id -> name is performed by
 - pkmn 1
   * Request Pokédex data by id
 
+- moveset Bulbasaur
+  * Request Smogon movesets by name
+
 - pktrivia
   * Start the trivia game
 

@@ -17,7 +17,7 @@
 # along with Botémon.  If not, see <http://www.gnu.org/licenses/>.
 #++
 
-class Pokedex  
+class Pokedex
   def self.id2name(id)
     begin
       return Nokogiri::HTML(open("http://pokemondb.net/pokedex/#{id}")).xpath('//div[@class="navbar"]/h1')[0].text

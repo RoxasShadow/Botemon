@@ -7,14 +7,15 @@ Gem::Specification.new {|s|
 	s.email         = 'webmaster@giovannicapuano.net'
 	s.homepage      = 'http://www.giovannicapuano.net'
 	s.platform      = Gem::Platform::RUBY
-	s.description   = 'IRC bot for pokéfag'
-	s.summary       = 'IRC bot which implements a Pokédex and a simple trivia game'
+	s.summary       = 'IRC bot for pokéfag.'
+	s.description   = 'IRC bot which implements a Pokédex and a simple trivia game.'
 
 	s.require_paths = ['lib']
 	s.files         = Dir.glob('lib/**/*.rb')
   s.executables   = 'botemon'
 
 	s.add_runtime_dependency 'cinch'
+	s.add_runtime_dependency 'cinch-login'
 	s.add_runtime_dependency 'nokogiri'
 	s.add_runtime_dependency 'sanitize'
 }

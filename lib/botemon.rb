@@ -18,6 +18,8 @@
 #++
 
 require 'cinch'
+require 'cinch/plugins/login'
+
 require 'open-uri'
 require 'nokogiri'
 require 'sanitize'
@@ -27,4 +29,9 @@ require 'botemon/string'
 require 'botemon/pokemon'
 require 'botemon/storage'
 require 'botemon/pokedex'
+
+require 'botemon/moveset'
+require 'botemon/movedex'
+
+
 require 'botemon/version'
