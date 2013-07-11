@@ -2,7 +2,7 @@
 
 Datas are got from Smogon and then cached. Convertion id -> name is performed by PokémonDB.
 
-You can try Botémon in #task-force and #omnivium, in irc.rizon.net
+You can try Botémon in #task-force and #omnivium at irc.rizon.net
  
 
 `Installation: [sudo] gem install botemon`
