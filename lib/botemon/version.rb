@@ -20,6 +20,6 @@
 
 module Botemon
   def self.version
-    '0.2.3'
+    '0.3'
   end
 end

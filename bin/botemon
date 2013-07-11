@@ -39,6 +39,7 @@ Cinch::Bot.new {
     @pokemon_trivia = nil
     @players        = []
     @trivia_owner   = ''
+    @trivia_wrong   = 0
   end
 
   on :message, /^pkmn (.+)/ do |m, name|
@@ -60,8 +61,13 @@ Cinch::Bot.new {
     if name == nil
       m.reply Format(:red, 'Pokémon not found.')
     else
-      moveset = Movedex.get name, tier
-      m.reply Format(:red, moveset ? moveset.to_s : 'Moveset not found.')
+      movesets = Movedex.get name, tier
+      if movesets != nil || movesets.any?
+        m.reply Format(:red, "--- #{movesets.first.pokemon} (#{movesets.first.tier}) ---")
+        movesets.each { |moveset| m.reply Format(:red, " -- #{moveset.name} --\n#{moveset.to_s.split("\n").map { |l| Format(:red, l) }.join("\n")}\n") }
+      else
+        m.reply Format(:red, 'Moveset not found.')
+      end
     end
   end
 
@@ -74,26 +80,10 @@ Cinch::Bot.new {
     else
       @pokemon_trivia = Pokedex.get Pokedex.id2name(Random.new.rand(1..649)), @storage
       @trivia_owner   = m.user.nick
+      @trivia_wrong   = 0
       
       m.reply @pokemon_trivia.clues.split("\n").map { |l| Format(:red, l) }.join("\n")
-      m.reply Format(:red, "You have 30 seconds. Try to say which Pokémon is this!")
-      
-      Timer(60) {
-        if @pokemon_trivia != nil
-          m.reply Format(:red, "Time expired. The secret Pokémon is #{@pokemon_trivia.name}!")
-          @pokemon_trivia = nil
-        end
-      }
-    end
-  end
-
-  on :message, /^pkstop$/ do |m|
-    if @pokemon_trivia != nil && (m.user.nick == 'mirkosp' || m.user.nick == 'RoxasShadowRS' || m.user.nick == @trivia_owner)
-      @pokemon_trivia = nil
-      @trivia_owner   = ''
-      m.reply Format(:red, "Game aborted by #{m.user.nick}.")
-    else
-      m.reply Format(:red, "Only ops can stop the game. #{m.user.nick} GTFO.")
+      m.reply Format(:red, "You have 3 chances to try to say which Pokémon is this!")
     end
   end
 
@@ -103,8 +93,26 @@ Cinch::Bot.new {
     elsif pokemon.downcase == @pokemon_trivia.name.downcase
       m.reply Format(:red, "Right, #{m.user.nick} won!")
       @pokemon_trivia = nil
+      @trivia_wrong   = 0
     else
       m.reply Format(:red, "Nope, #{m.user.nick} was wrong.")
+      @trivia_wrong += 1
+      if @trivia_wrong >= 3
+        m.reply Format(:red, "Time expired. The secret Pokémon is #{@pokemon_trivia.name}!")
+        @pokemon_trivia = nil
+        @trivia_wrong   = 0
+      end
+    end
+  end
+
+  on :message, /^pkstop$/ do |m|
+    if @pokemon_trivia != nil && (m.user.nick == 'mirkosp' || m.user.nick == 'RoxasShadowRS' || m.user.nick == @trivia_owner)
+      @pokemon_trivia = nil
+      @trivia_owner   = ''
+      @trivia_wrong   = 0
+      m.reply Format(:red, "Game aborted by #{m.user.nick}.")
+    else
+      m.reply Format(:red, "Only ops and the game luncher can stop the game. #{m.user.nick} GTFO.")
     end
   end
 

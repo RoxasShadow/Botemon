@@ -25,36 +25,65 @@ class Movedex
       return nil
     end
   end
-  
-  def self.tiers
-    ['uber', 'ou', 'bl', 'uu', 'bl2', 'ru', 'nu', 'lc', 'limbo', 'nfe']
-  end
    
   def self.get(name, tier)
-    return nil if name == nil || tier == nil || !Movedex.tiers.include?(tier.downcase)
+    return nil if name == nil || tier == nil
     
     begin
       url = URI::encode "http://www.smogon.com/bw/pokemon/#{name}/#{tier}"
       
-      moveset = Moveset.new
       smogon = Nokogiri::HTML(open(url))
     rescue
       return nil
     end
     
-    moveset.pokemon = smogon.xpath('//td[@class="header"]/h1').last.text
-    moveset.name    = smogon.xpath('//td[@class="name"]/h2').first.text
-    moveset.tier    = smogon.xpath('//table[@class="info"]/tr/td/a').last.text
+    movesets = []
     
-    section = smogon.xpath('//table[@class="info strategyheader"]/tr')[1].children
-    moveset.item    = section[2].text.gsub(/\n/m, '').gsub(/\t/m, '').strip
-    moveset.ability = section[4].text.gsub(/\n/m, '').gsub(/\t/m, '').strip
-    moveset.nature  = section[6].text.gsub(/\n/m, '').gsub(/\t/m, '').strip
+    smogon.xpath('//table[@class="info strategyheader"]').each { |s|
+      moveset = Moveset.new
+      
+      moveset.pokemon = smogon.xpath('//tr/td[@class="header"]/h1').last.text
+      moveset.name    = s.xpath('tr')[1].xpath('td[@class="name"]/h2').first.text
+      moveset.tier    = smogon.xpath('//div[@id="content_wrapper"]/ul/li/strong').last.text
+      
+      s.xpath('.//a').each { |a|
+        (moveset.item    ||= []) << a.text if a['href'].include? '/items/'
+        (moveset.ability ||= []) << a.text if a['href'].include? '/abilities/'
+        (moveset.nature  ||= []) << a.text if a['href'].include? '/natures/'
+      }
+      
+      movesets << moveset
+    }
     
-    section = smogon.xpath('//table[@class="info moveset"]/tr')[1].children
-    moveset.moves   = section[0].text.strip.gsub(/\n/, '').gsub(/~/, ',').gsub(/\s\s/, '')[2..-1]
-    moveset.evs     = section[2].text.strip
-    
-    return moveset
+    i = 0
+    smogon.xpath('//table[@class="info moveset"]').each { |s|
+      moveset = movesets[i]
+      
+      continue = false
+      s.xpath('.//td')[0].text.each_line { |a|
+        a = a.gsub(/\n?/, '').strip
+        if a == ?~
+          continue = false
+        elsif a == ?/
+          continue = true
+        elsif a.empty?
+          next
+        elsif a != ?~ && a != ?/
+          if continue
+            moveset.moves.last << a
+          else
+            (moveset.moves ||= []) << [a]
+          end
+          continue = false
+        end
+      }
+      
+      moveset.evs = s.xpath('.//td').last.text.strip
+      
+      movesets[i] = moveset
+      i += 1
+    }
+   
+    return movesets
   end
 end

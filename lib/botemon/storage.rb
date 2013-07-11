@@ -22,15 +22,15 @@ class Storage
   
   def initialize(file)
     @file = file
-    db  = File.exists?(file) ? JSON.load(File.read(file)) : []
-    @db = [].tap { |d|
-      db.each { |p| d << Pokemon.to_pokemon(p) }
+    @db = [].tap { |db|
+      (File.exists?(file) ? JSON.load(File.read(file)) : []).each { |p| db << Pokemon.to_pokemon(p) }
     }
   end
   
   def is_cached?(name)
     return @db.select { |p| p._name == name.downcase }.any?
   end
+  alias :include? :is_cached?
   
   def get(name)
     return @db.select { |p| p._name == name.downcase }.first
@@ -42,17 +42,16 @@ class Storage
   alias :dump :get_all
   
   def add(pokemon)
-    @db << pokemon
+    @db << pokemon unless is_cached?(pokemon.name)
   end
   alias :put :add
   
   def save
-    db_ary = [].tap { |ary|
+    [].tap { |ary|
       @db.each { |p| ary << p.to_ary }
-    }
-    
-    File.open(@file, 'wb') { |f|
-      f.write JSON.dump(db_ary)
+      File.open(@file, 'wb') { |f|
+        f.write JSON.dump(ary)
+      }
     }
   end
 end

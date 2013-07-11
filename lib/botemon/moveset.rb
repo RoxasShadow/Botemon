@@ -1,3 +1,4 @@
+#encoding: utf-8
 #--
 # Copyright(C) 2013 Giovanni Capuano <webmaster@giovannicapuano.net>
 #
@@ -21,7 +22,7 @@ class Moveset
   attr_accessor :pokemon, :name, :tier, :item, :ability, :nature, :moves, :evs
   
   def to_s
-    "Name: #{pokemon}\nSet: #{name}\nTier: #{tier}\nItem: #{item}\nAbility: #{ability}\nNature: #{nature}\nMoves: #{moves}\nEVs: #{evs}"
+    "Item: #{item.join(' / ')}\nAbility: #{ability.join(' / ')}\nNature: #{nature.join(' / ')}\nMoves: #{''.tap { |s| moves.each { |move| s << move.join(' / ') + ', '}}[0..-3]}\nEVs: #{evs}"
   end
   
 end
