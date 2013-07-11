@@ -48,7 +48,7 @@ Cinch::Bot.new {
     name = Pokedex.id2name(name) if name.numeric?
 
     pokemon = Pokedex.get name, @storage
-    m.reply pokemon ? "#{pokemon.to_s}\nhttp://www.smogon.com/bw/pokemon/#{name}".split("\n").map { |l| Format(:red, l) }.join("\n") : 'Pokémon not found.'
+    m.reply pokemon ? "#{pokemon.to_s}\n#{pokemon.url}".split("\n").map { |l| Format(:red, l) }.join("\n") : 'Pokémon not found.'
   end
 
   on :message, /^moveset (.+) (.+)/ do |m, name, tier|
@@ -129,6 +129,6 @@ Cinch::Bot.new {
   end
 
   on :message, /^pkversion$/ do |m|
-    m.reply Botemon::version
+    m.reply Format(:red, Botemon::version)
   end
 }.start
