@@ -100,7 +100,7 @@ Cinch::Bot.new {
       m.reply Format(:red, "Nope, #{m.user.nick} was wrong.")
       @trivia_wrong += 1
       if @trivia_wrong >= 3
-        m.reply Format(:red, "Time expired. The secret Pokémon is #{@pokemon_trivia.name}!")
+        m.reply Format(:red, "No more chances. The secret Pokémon is #{@pokemon_trivia.name}!")
         @pokemon_trivia = nil
         @trivia_wrong   = 0
       end
