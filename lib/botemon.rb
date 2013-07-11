@@ -17,21 +17,20 @@
 # along with Botémon.  If not, see <http://www.gnu.org/licenses/>.
 #++
 
-require 'cinch'
-require 'cinch/plugins/login'
-
 require 'open-uri'
 require 'nokogiri'
 require 'sanitize'
 require 'json'
 
+require 'cinch'
+require 'cinch/plugins/login'
+require 'smogon'
+
 require 'botemon/string'
-require 'botemon/pokemon'
+require 'botemon/smogon/pokemon'
+require 'botemon/smogon/moveset'
 require 'botemon/storage'
 require 'botemon/pokedex'
-
-require 'botemon/moveset'
 require 'botemon/movedex'
-
 
 require 'botemon/version'

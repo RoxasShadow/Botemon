@@ -23,7 +23,7 @@ class Storage
   def initialize(file)
     @file = file
     @db = [].tap { |db|
-      (File.exists?(file) ? JSON.load(File.read(file)) : []).each { |p| db << Pokemon.to_pokemon(p) }
+      (File.exists?(file) ? JSON.load(File.read(file)) : []).each { |p| db << Smogon::Pokemon.to_pokemon(p) }
     }
   end
   

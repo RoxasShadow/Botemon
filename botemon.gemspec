@@ -1,6 +1,6 @@
 Kernel.load 'lib/botemon/version.rb'
 
-Gem::Specification.new {|s|
+Gem::Specification.new { |s|
 	s.name          = 'botemon'
 	s.version       = Botemon::version
 	s.author        = 'Giovanni Capuano'
@@ -14,8 +14,9 @@ Gem::Specification.new {|s|
 	s.files         = Dir.glob('lib/**/*.rb')
   s.executables   = 'botemon'
 
-	s.add_runtime_dependency 'cinch'
-	s.add_runtime_dependency 'cinch-login'
 	s.add_runtime_dependency 'nokogiri'
 	s.add_runtime_dependency 'sanitize'
+	s.add_runtime_dependency 'cinch'
+	s.add_runtime_dependency 'cinch-login'
+	s.add_runtime_dependency 'smogon'
 }

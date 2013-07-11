@@ -28,42 +28,14 @@ class Pokedex
    
   def self.get(name, storage)
     return nil if name == nil
-    return storage.get(name) if storage.is_cached? name
     
-    begin
-      url = URI::encode "http://www.smogon.com/bw/pokemon/#{name}"
-      
-      pokemon = Pokemon.new
-      smogon = Nokogiri::HTML(open(url))
-    rescue
-      return nil
+    if storage.is_cached?(name)
+      return storage.get name
+    else
+      pokemon = Smogon::Pokedex.get name
+      storage.add pokemon
+      storage.save
+      return pokemon
     end
-    
-    pokemon.name  = smogon.xpath('//td[@class="header"]/h1').last.text
-    pokemon._name = pokemon.name.downcase
-    
-    smogon.xpath('//table[@class="info"]/tr/td/a')[0..-2].each { |type|
-      (pokemon.types ||= []) << type.text
-    }
-    
-    pokemon.tier = smogon.xpath('//table[@class="info"]/tr/td/a').last.text
-    
-    smogon.xpath('//td[@class="ability"]/dl/dt/a').each { |ability|
-      (pokemon.abilities ||= []) << ability.text
-    }
-    
-    begin
-      (pokemon.abilities ||= []) << smogon.xpath('//td[@class="ability"]/dl/dt/em/a').first.text
-    rescue
-      # No dream world ability :(
-    end
-    
-    smogon.xpath('//td[@class="bar"]').each { |base_stat|
-      (pokemon.base_stats ||= []) << base_stat.text.strip
-    }
-    
-    storage.add pokemon
-    storage.save
-    return pokemon
   end
 end

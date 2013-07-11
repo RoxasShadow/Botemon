@@ -17,17 +17,13 @@
 # along with Botémon.  If not, see <http://www.gnu.org/licenses/>.
 #++
 
-class Movedex 
-  def self.id2name(id)
-    return begin
-      Nokogiri::HTML(open("http://pokemondb.net/pokedex/#{id}")).xpath('//div[@class="navbar"]/h1')[0].text
-    rescue
-      nil
+module Smogon
+  class Moveset
+    attr_accessor :pokemon, :name, :tier, :item, :ability, :nature, :moves, :evs
+    
+    def to_s
+      "Item: #{item.join(' / ')}\nAbility: #{ability.join(' / ')}\nNature: #{nature.join(' / ')}\nMoves: #{''.tap { |s| moves.each { |move| s << move.join(' / ') + ', '}}[0..-3]}\nEVs: #{evs}"
     end
-  end
-   
-  def self.get(name, tier)
-    return nil if name == nil || tier == nil
-    return Smogon::Movedex.get name, tier
+    
   end
 end
