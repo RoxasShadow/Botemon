@@ -5,8 +5,9 @@ Datas are got from Smogon and then cached. Convertion id -> name is performed by
 You can try Botémon in #task-force and #omnivium, in irc.rizon.net
  
 
-`Installation: [sudo] gem install botemon
-Usage: botemon <bot_name> <bot_password> <server> <channels>`
+`Installation: [sudo] gem install botemon`
+
+`Usage: botemon <bot_name> <bot_password> <server> <channels>`
 
 
 - pkmn Bulbasaur
