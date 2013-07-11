@@ -32,5 +32,6 @@ require 'botemon/smogon/moveset'
 require 'botemon/storage'
 require 'botemon/pokedex'
 require 'botemon/movedex'
+require 'botemon/abilitydex'
 
 require 'botemon/version'

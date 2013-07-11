@@ -17,8 +17,9 @@
 # along with Botémon.  If not, see <http://www.gnu.org/licenses/>.
 #++
 
-module Botemon
-  def self.version
-    '0.3.3'
+class Abilitydex    
+  def self.get(name)
+    return nil if name == nil
+    return Smogon::Abilitydex.get name
   end
 end

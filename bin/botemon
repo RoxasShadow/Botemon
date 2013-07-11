@@ -46,28 +46,30 @@ Cinch::Bot.new {
     @storage = Storage.new('./cache.db') unless @storage
     
     name = Pokedex.id2name(name) if name.numeric?
-    
-    if name == nil
-      m.reply Format(:red, 'Pokémon not found.')
-    else
-      pokemon = Pokedex.get name, @storage
-      m.reply pokemon ? "#{pokemon.to_s}\nhttp://www.smogon.com/bw/pokemon/#{name}".split("\n").map { |l| Format(:red, l) }.join("\n") : 'Pokémon not found.'
-    end
+
+    pokemon = Pokedex.get name, @storage
+    m.reply pokemon ? "#{pokemon.to_s}\nhttp://www.smogon.com/bw/pokemon/#{name}".split("\n").map { |l| Format(:red, l) }.join("\n") : 'Pokémon not found.'
   end
 
   on :message, /^moveset (.+) (.+)/ do |m, name, tier|
     name = Pokedex.id2name(name) if name.numeric?
     
-    if name == nil
-      m.reply Format(:red, 'Pokémon not found.')
+
+    movesets = Movedex.get name, tier
+    if movesets != nil || movesets.any?
+      m.reply Format(:red, "--- #{movesets.first.pokemon} (#{movesets.first.tier}) ---")
+      movesets.each { |moveset| m.reply Format(:red, " -- #{moveset.name} --\n#{moveset.to_s.split("\n").map { |l| Format(:red, l) }.join("\n")}\n") }
     else
-      movesets = Movedex.get name, tier
-      if movesets != nil || movesets.any?
-        m.reply Format(:red, "--- #{movesets.first.pokemon} (#{movesets.first.tier}) ---")
-        movesets.each { |moveset| m.reply Format(:red, " -- #{moveset.name} --\n#{moveset.to_s.split("\n").map { |l| Format(:red, l) }.join("\n")}\n") }
-      else
-        m.reply Format(:red, 'Moveset not found.')
-      end
+      m.reply Format(:red, 'Moveset not found.')
+    end
+  end
+
+  on :message, /^ability (.+)/ do |m, name|   
+    ability = Abilitydex.get name
+    if ability != nil
+      m.reply Format(:red, "#{ability.to_s.split("\n").map { |l| Format(:red, l) }.join("\n")}")
+    else
+      m.reply Format(:red, 'Ability not found.')
     end
   end
 
