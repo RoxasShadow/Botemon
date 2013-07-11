@@ -1,1 +1,0 @@
-gem build botemon.gemspec && gem install botemon-0.3.gem
