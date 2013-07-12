@@ -9,7 +9,7 @@ Gem::Specification.new { |s|
 	s.platform      = Gem::Platform::RUBY
 	s.summary       = 'IRC bot for pokéfag.'
 	s.description   = 'IRC bot for pokéfag with (Poké|Ability|Move|Moveset)dex and a trivia game.'
-  	s.licenses    = 'GPL-3'
+  	s.licenses      = 'GPL-3'
 
 	s.require_paths = ['lib']
 	s.files         = Dir.glob('lib/**/*.rb')

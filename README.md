@@ -1,6 +1,6 @@
 # Smogon-API
 
-Unofficial API for Smogon (Poké|Ability|Move|Moveset)dex written in Ruby with Nokogiri.
+Unofficial API for Smogon (poké|ability|move|moveset)dex written in Ruby with Nokogiri.
 
 `Installation: [sudo] gem install smogon`
 
