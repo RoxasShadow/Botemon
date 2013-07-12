@@ -48,33 +48,23 @@ Cinch::Bot.new {
     name = Pokedex.id2name(name) if name.numeric?
 
     pokemon = Pokedex.get name, @storage
-    m.reply pokemon ? "#{pokemon.to_s}\n#{pokemon.url}".split("\n").map { |l| Format(:red, l) }.join("\n") : 'Pokémon not found.'
+    m.reply pokemon ? "#{pokemon.to_s}\n#{pokemon.url}".split("\n").map { |l| Format(:red, l) }.join("\n") : Format(:red, 'Pokémon not found.')
   end
 
   on :message, /^ability (.+)/ do |m, name|   
     ability = Abilitydex.get name
-    if ability != nil
-      m.reply Format(:red, "#{ability.to_s.split("\n").map { |l| Format(:red, l) }.join("\n")}")
-    else
-      m.reply Format(:red, 'Ability not found.')
-    end
+    m.reply ability ? "#{ability.to_s}\n#{ability.url}".split("\n").map { |l| Format(:red, l) }.join("\n") : Format(:red, 'Ability not found.')
   end
 
   on :message, /^move (.+)/ do |m, name|
-    name = Pokedex.id2name(name) if name.numeric?
-    
+    name = Pokedex.id2name(name) if name.numeric?    
 
     move = Movedex.get name
-    if move != nil
-      m.reply Format(:red, move.to_s.split("\n").map { |l| Format(:red, l) }.join("\n"))
-    else
-      m.reply Format(:red, 'Move not found.')
-    end
+    m.reply move ? "#{move.to_s}\n#{move.url}".split("\n").map { |l| Format(:red, l) }.join("\n") : Format(:red, 'Move not found.')
   end
 
   on :message, /^moveset (.+) (.+)/ do |m, name, tier|
     name = Pokedex.id2name(name) if name.numeric?
-    
 
     movesets = Movesetdex.get name, tier
     if movesets != nil || movesets.any?
