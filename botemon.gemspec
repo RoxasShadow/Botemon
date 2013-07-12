@@ -8,12 +8,12 @@ Gem::Specification.new { |s|
 	s.homepage      = 'http://www.giovannicapuano.net'
 	s.platform      = Gem::Platform::RUBY
 	s.summary       = 'IRC bot for pokéfag.'
-	s.description   = 'IRC bot which implements a Pokédex and a simple trivia game.'
-  s.licenses      = 'GPL-3'
+	s.description   = 'IRC bot for pokéfag with (Poké|Ability|Move|Moveset)dex and a trivia game.'
+  	s.licenses    = 'GPL-3'
 
 	s.require_paths = ['lib']
 	s.files         = Dir.glob('lib/**/*.rb')
-  s.executables   = 'botemon'
+ 	s.executables   = 'botemon'
 
 	s.add_runtime_dependency 'nokogiri'
 	s.add_runtime_dependency 'sanitize'

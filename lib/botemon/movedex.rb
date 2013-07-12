@@ -17,17 +17,9 @@
 # along with Botémon.  If not, see <http://www.gnu.org/licenses/>.
 #++
 
-class Movedex 
-  def self.id2name(id)
-    return begin
-      Nokogiri::HTML(open("http://pokemondb.net/pokedex/#{id}")).xpath('//div[@class="navbar"]/h1')[0].text
-    rescue
-      nil
-    end
-  end
-   
-  def self.get(name, tier)
-    return nil if name == nil || tier == nil
-    return Smogon::Movedex.get name, tier
+class Movedex    
+  def self.get(name)
+    return nil if name == nil
+    return Smogon::Movedex.get name
   end
 end

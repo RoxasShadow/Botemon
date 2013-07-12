@@ -51,25 +51,37 @@ Cinch::Bot.new {
     m.reply pokemon ? "#{pokemon.to_s}\n#{pokemon.url}".split("\n").map { |l| Format(:red, l) }.join("\n") : 'Pokémon not found.'
   end
 
-  on :message, /^moveset (.+) (.+)/ do |m, name, tier|
-    name = Pokedex.id2name(name) if name.numeric?
-    
-
-    movesets = Movedex.get name, tier
-    if movesets != nil || movesets.any?
-      m.reply Format(:red, "--- #{movesets.first.pokemon} (#{movesets.first.tier}) ---")
-      movesets.each { |moveset| m.reply Format(:red, " -- #{moveset.name} --\n#{moveset.to_s.split("\n").map { |l| Format(:red, l) }.join("\n")}\n") }
-    else
-      m.reply Format(:red, 'Moveset not found.')
-    end
-  end
-
   on :message, /^ability (.+)/ do |m, name|   
     ability = Abilitydex.get name
     if ability != nil
       m.reply Format(:red, "#{ability.to_s.split("\n").map { |l| Format(:red, l) }.join("\n")}")
     else
       m.reply Format(:red, 'Ability not found.')
+    end
+  end
+
+  on :message, /^move (.+)/ do |m, name|
+    name = Pokedex.id2name(name) if name.numeric?
+    
+
+    move = Movedex.get name
+    if move != nil
+      m.reply Format(:red, move.to_s.split("\n").map { |l| Format(:red, l) }.join("\n"))
+    else
+      m.reply Format(:red, 'Move not found.')
+    end
+  end
+
+  on :message, /^moveset (.+) (.+)/ do |m, name, tier|
+    name = Pokedex.id2name(name) if name.numeric?
+    
+
+    movesets = Movesetdex.get name, tier
+    if movesets != nil || movesets.any?
+      m.reply Format(:red, "--- #{movesets.first.pokemon} (#{movesets.first.tier}) ---")
+      movesets.each { |moveset| m.reply Format(:red, " -- #{moveset.name} --\n#{moveset.to_s.split("\n").map { |l| Format(:red, l) }.join("\n")}\n") }
+    else
+      m.reply Format(:red, 'Moveset not found.')
     end
   end
 
@@ -100,7 +112,7 @@ Cinch::Bot.new {
       m.reply Format(:red, "Nope, #{m.user.nick} was wrong.")
       @trivia_wrong += 1
       if @trivia_wrong >= 3
-        m.reply Format(:red, "Time expired. The secret Pokémon is #{@pokemon_trivia.name}!")
+        m.reply Format(:red, "No more chances. The secret Pokémon is #{@pokemon_trivia.name}!")
         @pokemon_trivia = nil
         @trivia_wrong   = 0
       end
