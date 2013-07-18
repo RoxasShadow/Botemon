@@ -142,7 +142,7 @@ Cinch::Bot.new {
   end
   
   on :message, /^pkcache$/ do |m|
-    if m.user.nick.oper? c
+    if m.user.nick.to_s.oper? c
       File.delete('./cache.db') if File.exists? './cache.db'
       
       @storage        = Storage.new './cache.db'
