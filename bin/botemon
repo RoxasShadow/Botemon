@@ -45,7 +45,7 @@ Cinch::Bot.new {
   on :message, /^pkmn (.+)/ do |m, name|
     @storage = Storage.new('./cache.db') unless @storage
     
-    name = Pokedex.id2name(name) if name.numeric?
+    name = Smogon::Pokemon.id2name(name) if name.numeric?
 
     pokemon = Pokedex.get name, @storage
     m.reply pokemon ? "#{pokemon.to_s}\n#{pokemon.url}".split("\n").map { |l| Format(:red, l) }.join("\n") : Format(:red, 'Pokémon not found.')
@@ -53,18 +53,23 @@ Cinch::Bot.new {
 
   on :message, /^ability (.+)/ do |m, name|   
     ability = Abilitydex.get name
+    
     m.reply ability ? "#{ability.to_s}\n#{ability.url}".split("\n").map { |l| Format(:red, l) }.join("\n") : Format(:red, 'Ability not found.')
   end
 
   on :message, /^move (.+)/ do |m, name|
-    name = Pokedex.id2name(name) if name.numeric?    
+    name = Smogon::Pokemon.id2name(name) if name.numeric?    
 
-    move = Movedex.get name
-    m.reply move ? "#{move.to_s}\n#{move.url}".split("\n").map { |l| Format(:red, l) }.join("\n") : Format(:red, 'Move not found.')
+    if name
+      move = Movedex.get name
+      m.reply move ? "#{move.to_s}\n#{move.url}".split("\n").map { |l| Format(:red, l) }.join("\n") : Format(:red, 'Move not found.')
+    else
+      m.reply Format(:red, 'An error is occurred searching the Pokémon.')
+    end
   end
 
   on :message, /^moveset (.+) (.+)/ do |m, name, tier|
-    name = Pokedex.id2name(name) if name.numeric?
+    name = Smogon::Pokemon.id2name(name) if name.numeric?
 
     movesets = Movesetdex.get name, tier
     if movesets != nil || movesets.any?
@@ -82,16 +87,20 @@ Cinch::Bot.new {
       m.reply Format(:red, 'Other players are playing, wait until they finish.')
       m.reply Format(:red, @pokemon_trivia.clues)
     else
-      @pokemon_trivia = Pokedex.get Pokedex.id2name(Random.new.rand(1..649)), @storage
+      @pokemon_trivia = Pokedex.get Smogon::Pokemon.id2name(Random.new.rand(1..649)), @storage
       @trivia_owner   = m.user.nick
       @trivia_wrong   = 0
       
-      m.reply @pokemon_trivia.clues.split("\n").map { |l| Format(:red, l) }.join("\n")
-      m.reply Format(:red, "You have 3 chances to try to say which Pokémon is this!")
+      if @pokemon_trivia
+        m.reply @pokemon_trivia.clues.split("\n").map { |l| Format(:red, l) }.join("\n")
+        m.reply Format(:red, 'You have 3 chances to try to say which Pokémon is this!')
+      else
+        m.reply Format(:red, 'An error is occurred searching the Pokémon.')
+      end
     end
   end
 
-  on :message, /^pktrivia (.+)$/ do |m, pokemon|
+  on :message, /^pktrivia (.+)/ do |m, pokemon|
     if @pokemon_trivia == nil
       m.reply Format(:red, 'You have to start the game before to play.')
     elsif pokemon.downcase == @pokemon_trivia.name.downcase
@@ -115,6 +124,8 @@ Cinch::Bot.new {
       @trivia_owner   = ''
       @trivia_wrong   = 0
       m.reply Format(:red, "Game aborted by #{m.user.nick}.")
+    elsif @pokemon_trivia == nil
+      m.reply Format(:red, 'Game not started.')
     else
       m.reply Format(:red, "Only ops and the game luncher can stop the game. #{m.user.nick} GTFO.")
     end
@@ -126,11 +137,28 @@ Cinch::Bot.new {
     elsif m.user.nick == 'mirkosp' || m.user.nick == 'RoxasShadowRS'
       m.reply Format(:red, @pokemon_trivia.name)
     else
-      m.reply Format(:red, 'VAI A ZAPPARE LA TERRA')
+      m.reply Format(:red, "GO TO DIG THE EARTH #{m.user.nick} ヽ(`Д´)ﾉ ┻━┻")
+    end
+  end
+  
+  on :message, /^pkcache$/ do |m|
+    if m.user.nick.oper? c
+      File.delete('./cache.db') if File.exists? './cache.db'
+      
+      @storage        = Storage.new './cache.db'
+      @pokemon_trivia = nil
+      @players        = []
+      @trivia_owner   = ''
+      @trivia_wrong   = 0
+      
+      m.reply Format(:red, 'Cache created.')
+    else
+      m.reply Format(:red, "Only ops can create the cache. #{m.user.nick} GTFO.")
     end
   end
 
   on :message, /^pkversion$/ do |m|
-    m.reply Format(:red, Botemon::version)
+    m.reply Format(:red, "Botémon:    #{Botemon::version}")
+    m.reply Format(:red, "Smogon-API: #{Smogon::version}")
   end
 }.start

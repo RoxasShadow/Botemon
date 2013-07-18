@@ -17,25 +17,14 @@
 # along with Botémon.  If not, see <http://www.gnu.org/licenses/>.
 #++
 
-class Pokedex
-  def self.id2name(id)
-    begin
-      return Nokogiri::HTML(open("http://pokemondb.net/pokedex/#{id}")).xpath('//div[@class="navbar"]/h1')[0].text
-    rescue
-      return nil
-    end
-  end
-   
+class Pokedex   
   def self.get(name, storage)
     return nil if name == nil
+    return storage.get(name) if storage.is_cached? name
     
-    if storage.is_cached?(name)
-      return storage.get name
-    else
-      pokemon = Smogon::Pokedex.get name
+    return Smogon::Pokedex.get(name).tap { |pokemon|
       storage.add pokemon
       storage.save
-      return pokemon
-    end
+    }
   end
 end
