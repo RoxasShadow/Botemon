@@ -1,9 +1,9 @@
-# Botémon - IRC bot for Pokéfag
+# Botémon - IRC bot for Pokéfags
 
-Datas are got from Smogon and then cached. Convertion id -> name is performed by PokémonDB.
+Datas are fetched from Smogon and then are cached. `id -> name` conversion performed by PokémonDB.
 
 You can try Botémon in #task-force and #omnivium at irc.rizon.net
- 
+
 
 `Installation: [sudo] gem install botemon`
 
@@ -22,8 +22,11 @@ You can try Botémon in #task-force and #omnivium at irc.rizon.net
 - move Reflect
   * Request the description of the given move.
 
-- moveset Bulbasaur LC
-  * Request Smogon movesets by name and tier.
+- moveset Bulbasaur LC BW
+  * Request Smogon movesets by name, tier and metagame (optional, default is bw).
+
+- pkrandom
+  * Get info about a random Pokémon.
 
 - pktrivia
   * Start the trivia game.

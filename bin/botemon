@@ -68,16 +68,23 @@ Cinch::Bot.new {
     end
   end
 
-  on :message, /^moveset (.+) (.+)/ do |m, name, tier|
+  on :message, /^moveset (.+) (.+) (.+)/ do |m, name, tier, metagame|
     name = Smogon::Pokemon.id2name(name) if name.numeric?
 
-    movesets = Movesetdex.get name, tier
+    movesets = Movesetdex.get name, tier, (metagame.empty? ? 'bw' : metagame)
     if movesets != nil || movesets.any?
       m.reply Format(:red, "--- #{movesets.first.pokemon} (#{movesets.first.tier}) ---")
       movesets.each { |moveset| m.reply Format(:red, " -- #{moveset.name} --\n#{moveset.to_s.split("\n").map { |l| Format(:red, l) }.join("\n")}\n") }
     else
       m.reply Format(:red, 'Moveset not found.')
     end
+  end
+
+  on :message, /^pkrandom$/ do |m|
+    @storage = Storage.new('./cache.db') unless @storage
+    
+    pokemon = Pokedex.get Smogon::Pokemon.id2name(Random.new.rand(1..649)), @storage
+    m.reply pokemon ? "#{pokemon.to_s}\n#{pokemon.url}".split("\n").map { |l| Format(:red, l) }.join("\n") : Format(:red, 'Pokémon not found.')
   end
 
   on :message, /^pktrivia$/ do |m|
@@ -142,7 +149,7 @@ Cinch::Bot.new {
   end
   
   on :message, /^pkcache$/ do |m|
-    if m.user.nick.oper? c
+    if m.user.nick.to_s.oper? c
       File.delete('./cache.db') if File.exists? './cache.db'
       
       @storage        = Storage.new './cache.db'

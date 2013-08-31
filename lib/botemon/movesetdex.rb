@@ -18,7 +18,7 @@
 #++
 
 class Movesetdex    
-  def self.get(name, tier)
-    return name && tier ? Smogon::Movesetdex.get(name, tier) : nil
+  def self.get(name, tier, metagame)
+    return name && tier ? Smogon::Movesetdex.get(name, tier, metagame) : nil
   end
 end
