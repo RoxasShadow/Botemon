@@ -17,23 +17,8 @@
 # along with Botémon.  If not, see <http://www.gnu.org/licenses/>.
 #++
 
-require 'open-uri'
-require 'nokogiri'
-require 'sanitize'
-require 'json'
-
-require 'cinch'
-require 'cinch/plugins/login'
-require 'smogon'
-
-require 'botemon/string'
-require 'botemon/smogon/pokemon'
-require 'botemon/smogon/moveset'
-require 'botemon/storage'
-require 'botemon/pokedex'
-require 'botemon/abilitydex'
-require 'botemon/itemdex'
-require 'botemon/movedex'
-require 'botemon/movesetdex'
-
-require 'botemon/version'
+class Itemdex    
+  def self.get(name)
+    return name ? Smogon::Itemdex.get(name) : nil
+  end
+end

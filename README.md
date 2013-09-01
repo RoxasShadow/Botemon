@@ -19,6 +19,9 @@ You can try Botémon in #task-force and #omnivium at irc.rizon.net
 - ability Synchronize
   * Request the description of the given ability.
 
+- item Leftovers
+  * Request the description of the given item.
+
 - move Reflect
   * Request the description of the given move.
 
