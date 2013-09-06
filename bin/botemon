@@ -47,7 +47,7 @@ Cinch::Bot.new {
     
     name = Smogon::Pokemon.id2name(name) if name.numeric?
 
-    pokemon = Pokedex.get name, @storage
+    pokemon = Pokedex.get name.delete(?'), @storage
     m.reply pokemon ? "#{pokemon.to_s}\n#{pokemon.url}".split("\n").map { |l| Format(:red, l) }.join("\n") : Format(:red, 'Pokémon not found.')
   end
 
@@ -64,20 +64,15 @@ Cinch::Bot.new {
   end
 
   on :message, /^move (.+)/ do |m, name|
-    name = Smogon::Pokemon.id2name(name) if name.numeric?    
+    move = Movedex.get name
 
-    if name
-      move = Movedex.get name
-      m.reply move ? "#{move.to_s}\n#{move.url}".split("\n").map { |l| Format(:red, l) }.join("\n") : Format(:red, 'Move not found.')
-    else
-      m.reply Format(:red, 'An error is occurred searching the Pokémon.')
-    end
+    m.reply move ? "#{move.to_s}\n#{move.url}".split("\n").map { |l| Format(:red, l) }.join("\n") : Format(:red, 'Move not found.')
   end
 
   on :message, /^moveset (.+) (.+) (.+)/ do |m, name, tier, metagame|
     name = Smogon::Pokemon.id2name(name) if name.numeric?
 
-    movesets = Movesetdex.get name, tier, (metagame.empty? ? 'bw' : metagame)
+    movesets = Movesetdex.get name.delete(?'), tier, (metagame.empty? ? 'bw' : metagame)
     if movesets != nil || movesets.any?
       m.reply Format(:red, "--- #{movesets.first.pokemon} (#{movesets.first.tier}) ---")
       movesets.each { |moveset| m.reply Format(:red, " -- #{moveset.name} --\n#{moveset.to_s.split("\n").map { |l| Format(:red, l) }.join("\n")}\n") }
@@ -89,7 +84,7 @@ Cinch::Bot.new {
   on :message, /^pkrandom$/ do |m|
     @storage = Storage.new('./cache.db') unless @storage
     
-    pokemon = Pokedex.get Smogon::Pokemon.id2name(Random.new.rand(1..649)), @storage
+    pokemon = Pokedex.get Smogon::Pokemon.id2name(Random.new.rand(1..649)).delete(?'), @storage
     m.reply pokemon ? "#{pokemon.to_s}\n#{pokemon.url}".split("\n").map { |l| Format(:red, l) }.join("\n") : Format(:red, 'Pokémon not found.')
   end
 
@@ -100,7 +95,7 @@ Cinch::Bot.new {
       m.reply Format(:red, 'Other players are playing, wait until they finish.')
       m.reply Format(:red, @pokemon_trivia.clues)
     else
-      @pokemon_trivia = Pokedex.get Smogon::Pokemon.id2name(Random.new.rand(1..649)), @storage
+      @pokemon_trivia = Pokedex.get Smogon::Pokemon.id2name(Random.new.rand(1..649)).delete(?'), @storage
       @trivia_owner   = m.user.nick
       @trivia_wrong   = 0
       
