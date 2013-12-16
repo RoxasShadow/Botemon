@@ -93,7 +93,7 @@ Cinch::Bot.new {
       ivs = hidden_values[1].strip.split ?/
     else
       evs = evs.strip.split ?/
-      ivs = '31/31/31/31/31/31'
+      ivs = '31/31/31/31/31/31'.split ?/
     end
 
     m.reply "#{pokemon.name}: (#{pokemon.types.join(?-)}) #{pokemon.stats(level.to_i, nature, evs, ivs).join(?/)}"

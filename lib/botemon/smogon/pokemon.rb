@@ -50,7 +50,7 @@ module Smogon
       }
     end
 
-    def stats(level, nature, ivs, evs)
+    def stats(level, nature, evs, ivs)
       natures = {
         :jolly   => { :plus => :spe,   :minus => :atksp },
         :rash    => { :plus => :atksp, :minus => :defsp },
@@ -80,8 +80,8 @@ module Smogon
       }
 
       fields     = [ :hp, :atk, :def, :atksp, :defsp, :spe ]
-      evs        = Hash[fields.zip evs.split(?/)]
-      ivs        = Hash[fields.zip ivs.split(?/)]
+      evs        = Hash[fields.zip evs]
+      ivs        = Hash[fields.zip ivs]
       base_stats = Hash[fields.zip @base_stats]
       nature     = natures[nature.downcase.to_sym]
 
