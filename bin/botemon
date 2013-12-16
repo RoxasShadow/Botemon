@@ -81,6 +81,25 @@ Cinch::Bot.new {
     end
   end
 
+  on :message, /^pstats (.+) (.+) (.+) (.+)/ do |m, name, level, nature, evs|
+    m.reply ">#{ivs}< #{ivs.class}"
+    @storage = Storage.new('./cache.db') unless @storage
+
+    name    = Smogon::Pokemon.id2name(name) if name.numeric?
+    pokemon = Pokedex.get name.delete(?'), @storage
+
+    hidden_values = evs.strip.split
+    if hidden_values.length == 2
+      evs = hidden_values[0].strip.split ?/
+      ivs = hidden_values[1].strip.split ?/
+    else
+      evs = evs.strip.split ?/
+      ivs = '31/31/31/31/31/31'
+    end
+
+    m.reply "#{pokemon.name}: (#{pokemon.types.join(?-)}) #{pokemon.stats(level.to_i, nature, evs, ivs).join(?/)}"
+  end
+
   on :message, /^pkrandom$/ do |m|
     @storage = Storage.new('./cache.db') unless @storage
     

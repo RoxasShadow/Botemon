@@ -49,5 +49,60 @@ module Smogon
         'base_stats' => base_stats
       }
     end
+
+    def stats(level, nature, ivs, evs)
+      natures = {
+        :jolly   => { :plus => :spe,   :minus => :atksp },
+        :rash    => { :plus => :atksp, :minus => :defsp },
+        :hardy   => { :plus => :none,  :minus => :none  },
+        :brave   => { :plus => :atk,   :minus => :spe   },
+        :naughty => { :plus => :atk,   :minus => :defsp },
+        :calm    => { :plus => :defsp, :minus => :atk   },
+        :careful => { :plus => :defsp, :minus => :atksp },
+        :adamant => { :plus => :atk,   :minus => :atksp },
+        :docile  => { :plus => :none,  :minus => :none  },
+        :lax     => { :plus => :def,   :minus => :defsp },
+        :quirky  => { :plus => :none,  :minus => :none  },
+        :gentle  => { :plus => :defsp, :minus => :def   },
+        :naive   => { :plus => :spe,   :minus => :defsp },
+        :hasty   => { :plus => :spe,   :minus => :def   },
+        :mild    => { :plus => :atksp, :minus => :def   },
+        :modest  => { :plus => :atksp, :minus => :atk   },
+        :relaxed => { :plus => :def,   :minus => :spe   },
+        :quiet   => { :plus => :atksp, :minus => :spe   },
+        :bashful => { :plus => :none,  :minus => :none  },
+        :impish  => { :plus => :def,   :minus => :atksp },
+        :lonely  => { :plus => :atk,   :minus => :def   },
+        :serious => { :plus => :none,  :minus => :none  },
+        :bold    => { :plus => :def,   :minus => :atk   },
+        :timid   => { :plus => :spe,   :minus => :atk   },
+        :sassy   => { :plus => :defsp, :minus => :spe   },
+      }
+
+      fields     = [ :hp, :atk, :def, :atksp, :defsp, :spe ]
+      evs        = Hash[fields.zip evs.split(?/)]
+      ivs        = Hash[fields.zip ivs.split(?/)]
+      base_stats = Hash[fields.zip @base_stats]
+      nature     = natures[nature.downcase.to_sym]
+
+      [].tap { |stats|
+        fields.each_with_index { |field|
+          iv        = ivs[field].to_i
+          ev        = evs[field].to_i
+          base_stat = base_stats[field].to_i
+          multipler = case field
+            when nature[:plus]  then 1.1
+            when nature[:minus] then 0.9
+            else                     1
+          end
+
+          if field == :hp
+            stats << (((iv + 2 * base_stat + ev / 4) * level / 100) + 10 + level).floor
+          else
+            stats << ((((iv + 2 * base_stat + ev / 4) * level / 100) + 5) * multipler).floor
+          end
+        }
+      }
+    end
   end
 end
