@@ -82,7 +82,6 @@ Cinch::Bot.new {
   end
 
   on :message, /^pstats (.+) (.+) (.+) (.+)/ do |m, name, level, nature, evs|
-    m.reply ">#{ivs}< #{ivs.class}"
     @storage = Storage.new('./cache.db') unless @storage
 
     name    = Smogon::Pokemon.id2name(name) if name.numeric?

@@ -28,10 +28,10 @@ You can try Botémon in #task-force and #omnivium at irc.rizon.net
 - moveset Bulbasaur LC BW
   * Request Smogon movesets by name, tier and metagame (optional, default is bw).
 
-- pstat scizor 70 adamant 0/252/0/0/6/252 15/31/30/2/31/31
+- pstats scizor 70 adamant 0/252/0/0/6/252 15/31/30/2/31/31
   * Calculate the final stats of a level 70 scizor with the given EVs and IVs.
 
-- pstat scizor 70 adamant 0/252/0/0/6/252
+- pstats scizor 70 adamant 0/252/0/0/6/252
   * Calculate the final stats of a level 70 scizor with the given EVs and all the IVs set to 31.
 
 - pkrandom
