@@ -24,7 +24,7 @@ require 'open-uri'
 
 abort 'Usage: botemon <bot_name> <server> <channels>' if ARGV.length < 3
 
-Cinch::Bot.new {
+bot = Cinch::Bot.new {
   configure do |c|
     c.nick     = ARGV[0]
     c.realname = ARGV[0]
@@ -41,7 +41,6 @@ Cinch::Bot.new {
     @players        = []
     @trivia_owner   = ''
     @trivia_wrong   = 0
-    @bot_admin      = [ 'mirkosp', 'RoxasShadowRS' ]
   end
 
   on :message, /^pkmn (.+)/ do |m, name|
@@ -147,7 +146,7 @@ Cinch::Bot.new {
   end
 
   on :message, /^pkstop$/ do |m|
-    if @pokemon_trivia != nil && (@bot_admin.include?(m.user.nick) || m.user.nick == @trivia_owner)
+     if @pokemon_trivia != nil && (m.user.nick == 'mirkosp' || m.user.nick == 'RoxasShadowRS' || m.user.nick == @trivia_owner)
       @pokemon_trivia = nil
       @trivia_owner   = ''
       @trivia_wrong   = 0
@@ -162,7 +161,7 @@ Cinch::Bot.new {
   on :message, /^pkdebug$/ do |m|
     if @pokemon_trivia == nil
       m.reply Format(:red, 'Game not started.')
-    elsif @bot_admin.include?(m.user.nick)
+    elsif m.user.nick == 'mirkosp' || m.user.nick == 'RoxasShadowRS'
       m.reply Format(:red, @pokemon_trivia.name)
     else
       proverbs = open('http://pastebin.com/raw.php?i=qWF65TcP').read.each_line.to_a.sample.strip
@@ -171,7 +170,7 @@ Cinch::Bot.new {
   end
   
   on :message, /^pkcache$/ do |m|
-    if m.user.nick.to_s.oper? c
+    if m.user.nick.to_s.oper? bot
       File.delete('./cache.db') if File.exists? './cache.db'
       
       @storage        = Storage.new './cache.db'
@@ -204,4 +203,5 @@ Cinch::Bot.new {
     m.reply Format(:red, "- pstats   Scizor 70 Adamant 0/252/0/0/6/252                  ")
     m.reply Format(:red, "- pkrandom, pktrivia, pkdebug, pkstop, pkcache, pkversion     ")
   end
-}.start
+}
+bot.start

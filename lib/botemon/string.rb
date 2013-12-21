@@ -23,7 +23,7 @@ class String
     self.to_i.to_s == self || self.to_f.to_s == self
   end
   
-  def oper?(c)
+  def oper?(bot)
     bot.channels.each { |c| return true if c.ops.include? self }
   end
   
