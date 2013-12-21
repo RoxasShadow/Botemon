@@ -20,26 +20,28 @@
 #++
 
 require 'botemon'
+require 'open-uri'
 
-abort 'Usage: botemon <bot_name> <bot_password> <server> <channels>' if ARGV.length < 4
+abort 'Usage: botemon <bot_name> <server> <channels>' if ARGV.length < 3
 
 Cinch::Bot.new {
   configure do |c|
     c.nick     = ARGV[0]
     c.realname = ARGV[0]
     c.user     = ARGV[0]
-    c.password = ARGV[1]
-    c.server   = ARGV[2]
-    c.channels = ARGV.drop(3).map { |c| "\##{c}" }
+    c.password = 'dat_password'
+    c.server   = ARGV[1]
+    c.channels = ARGV.drop(2).map { |c| "\##{c}" }
     
     c.plugins.plugins = [Cinch::Plugins::Login]
-    c.plugins.options[Cinch::Plugins::Login] = { :password => ARGV[1] }
+    c.plugins.options[Cinch::Plugins::Login] = { :password => 'dat_password' }
     
     @storage        = Storage.new './cache.db'
     @pokemon_trivia = nil
     @players        = []
     @trivia_owner   = ''
     @trivia_wrong   = 0
+    @bot_admin      = [ 'mirkosp', 'RoxasShadowRS' ]
   end
 
   on :message, /^pkmn (.+)/ do |m, name|
@@ -81,7 +83,7 @@ Cinch::Bot.new {
     end
   end
 
-  on :message, /^pstats (.+) (.+) (.+) (.+)/ do |m, name, level, nature, evs|
+  on :message, /^pstats (\S*) (\S*) (\S*) (.*)/ do |m, name, level, nature, evs|
     @storage = Storage.new('./cache.db') unless @storage
 
     name    = Smogon::Pokemon.id2name(name) if name.numeric?
@@ -89,13 +91,13 @@ Cinch::Bot.new {
 
     hidden_values = evs.strip.split
     if hidden_values.length == 2
-      evs = hidden_values[0].strip.split ?/
-      ivs = hidden_values[1].strip.split ?/
+      evs = hidden_values[0].split ?/
+      ivs = hidden_values[1].split ?/
     else
-      evs = evs.strip.split ?/
+      evs = evs.split                 ?/
       ivs = '31/31/31/31/31/31'.split ?/
     end
-
+    
     m.reply "#{pokemon.name}: (#{pokemon.types.join(?-)}) #{pokemon.stats(level.to_i, nature, evs, ivs).join(?/)}"
   end
 
@@ -110,7 +112,7 @@ Cinch::Bot.new {
     @storage = Storage.new('./cache.db') unless @storage
     
     if @pokemon_trivia != nil
-      m.reply Format(:red, 'Other players are playing, wait until they finish.')
+      m.reply Format(:red, 'Other players are playing, please wait until they finish.')
       m.reply Format(:red, @pokemon_trivia.clues)
     else
       @pokemon_trivia = Pokedex.get Smogon::Pokemon.id2name(Random.new.rand(1..649)).delete(?'), @storage
@@ -137,7 +139,7 @@ Cinch::Bot.new {
       m.reply Format(:red, "Nope, #{m.user.nick} was wrong.")
       @trivia_wrong += 1
       if @trivia_wrong >= 3
-        m.reply Format(:red, "No more chances. The secret Pokémon is #{@pokemon_trivia.name}!")
+        m.reply Format(:red, "You have no more chances. The secret Pokémon is #{@pokemon_trivia.name}!")
         @pokemon_trivia = nil
         @trivia_wrong   = 0
       end
@@ -145,25 +147,26 @@ Cinch::Bot.new {
   end
 
   on :message, /^pkstop$/ do |m|
-    if @pokemon_trivia != nil && (m.user.nick == 'mirkosp' || m.user.nick == 'RoxasShadowRS' || m.user.nick == @trivia_owner)
+    if @pokemon_trivia != nil && (@bot_admin.include?(m.user.nick) || m.user.nick == @trivia_owner)
       @pokemon_trivia = nil
       @trivia_owner   = ''
       @trivia_wrong   = 0
       m.reply Format(:red, "Game aborted by #{m.user.nick}.")
     elsif @pokemon_trivia == nil
-      m.reply Format(:red, 'Game not started.')
+      m.reply Format(:red, 'Game not started yet.')
     else
-      m.reply Format(:red, "Only ops and the game luncher can stop the game. #{m.user.nick} GTFO.")
+      m.reply Format(:red, "Only channel operators and the game luncher can stop the game. #{m.user.nick} GTFO.")
     end
   end
 
   on :message, /^pkdebug$/ do |m|
     if @pokemon_trivia == nil
       m.reply Format(:red, 'Game not started.')
-    elsif m.user.nick == 'mirkosp' || m.user.nick == 'RoxasShadowRS'
+    elsif @bot_admin.include?(m.user.nick)
       m.reply Format(:red, @pokemon_trivia.name)
     else
-      m.reply Format(:red, "GO TO DIG THE EARTH #{m.user.nick} ヽ(`Д´)ﾉ ┻━┻")
+      proverbs = open('http://pastebin.com/raw.php?i=qWF65TcP').read.each_line.to_a.sample.strip
+      m.reply Format(:red, proverbs)
     end
   end
   
@@ -179,7 +182,8 @@ Cinch::Bot.new {
       
       m.reply Format(:red, 'Cache created.')
     else
-      m.reply Format(:red, "Only ops can create the cache. #{m.user.nick} GTFO.")
+      proverbs = open('http://pastebin.com/raw.php?i=qWF65TcP').read.each_line.to_a.sample.strip
+      m.reply Format(:red, proverbs)
     end
   end
 
@@ -189,10 +193,15 @@ Cinch::Bot.new {
   end
 
   on :message, /^pkhelp$/ do |m|
-    m.reply Format(:red, "- pkmn    Bulbasaur / 1     ")
-    m.reply Format(:red, "- ability Synchronize       ")
-    m.reply Format(:red, "- move    Reflect           ")
-    m.reply Format(:red, "- moveset Bulbasaur LC (BW) ")
-    m.reply Format(:red, "- pkrandom, pktrivia, pkstop, pkversion ")
+    m.reply Format(:red, "- pkmn     Bulbasaur                                          ")
+    m.reply Format(:red, "- pkmn     1                                                  ")
+    m.reply Format(:red, "- ability  Synchronize                                        ")
+    m.reply Format(:red, "- item     Leftovers                                          ")
+    m.reply Format(:red, "- move     Reflect                                            ")
+    m.reply Format(:red, "- moveset  Bulbasaur LC                                       ")
+    m.reply Format(:red, "- moveset  Bulbasaur LC DP                                    ")
+    m.reply Format(:red, "- pstats   Scizor 70 Adamant 0/252/0/0/6/252 15/31/30/2/31/31 ")
+    m.reply Format(:red, "- pstats   Scizor 70 Adamant 0/252/0/0/6/252                  ")
+    m.reply Format(:red, "- pkrandom, pktrivia, pkdebug, pkstop, pkcache, pkversion     ")
   end
 }.start

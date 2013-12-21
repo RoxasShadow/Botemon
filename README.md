@@ -2,12 +2,12 @@
 
 Data are fetched from Smogon and then cached. `id -> name` conversion is performed by PokémonDB.
 
-You can try Botémon in #task-force and #omnivium at irc.rizon.net
+You can try Botémon in `#task-force` and `#omnivium` at `irc.rizon.net`.
 
 
 `Installation: [sudo] gem install botemon`
 
-`Usage: botemon <bot_name> <bot_password> <server> <channels>`
+`Usage: botemon <bot_name> <server> <channels>`
 
 
 - pkmn Bulbasaur
@@ -26,16 +26,16 @@ You can try Botémon in #task-force and #omnivium at irc.rizon.net
   * Request the description of the given move.
 
 - moveset Bulbasaur LC BW
-  * Request Smogon movesets by name, tier and metagame (optional, default is bw).
+  * Request Smogon movesets by name, tier and metagame (it's optional, by default it's bw).
 
-- pstats scizor 70 adamant 0/252/0/0/6/252 15/31/30/2/31/31
+- pstats Scizor 70 Adamant 0/252/0/0/6/252 15/31/30/2/31/31
   * Calculate the final stats of a level 70 scizor with the given EVs and IVs.
 
-- pstats scizor 70 adamant 0/252/0/0/6/252
+- pstats Scizor 70 Adamant 0/252/0/0/6/252
   * Calculate the final stats of a level 70 scizor with the given EVs and all the IVs set to 31.
 
 - pkrandom
-  * Get info about a random Pokémon.
+  * Get infos about a random Pokémon.
 
 - pktrivia
   * Start the trivia game.
@@ -44,11 +44,17 @@ You can try Botémon in #task-force and #omnivium at irc.rizon.net
   * Try to foresee the mysterious Pokémon.
 
 - pkdebug
-  * Check what is the mysterious Pokémon. Only for selected users.
+  * Reveal who is the mysterious Pokémon. Only for selected users.
 
 - pkstop
-  * Abort the game. Only for channel operators and the user who has started the game.
+  * Abort the game. Only for channel operators and the user who started the game.
+
+- pkcache
+  * Create a new cache. Only for channel operators.
+
+- pkhelp
+  * Print all available commands
 
 - pkversion
-  * Get the version of Botémon.
+  * Print the version of Botémon.
 

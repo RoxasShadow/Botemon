@@ -42,6 +42,7 @@ class Storage
   alias :dump :get_all
   
   def add(pokemon)
+    return unless pokemon
     @db << pokemon unless is_cached?(pokemon.name)
   end
   alias :put :add
