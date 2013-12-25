@@ -19,5 +19,6 @@ Gem::Specification.new { |s|
 	s.add_runtime_dependency 'sanitize'
 	s.add_runtime_dependency 'cinch'
 	s.add_runtime_dependency 'cinch-login'
+	s.add_runtime_dependency 'cinch-colorize'
 	s.add_runtime_dependency 'smogon'
 }

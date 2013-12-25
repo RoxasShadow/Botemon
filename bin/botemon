@@ -21,6 +21,7 @@
 
 require 'botemon'
 require 'open-uri'
+require 'cinch/colorize'
 
 abort 'Usage: botemon <bot_name> <bot_password> <server> <channels>' if ARGV.length < 4
 
@@ -49,25 +50,25 @@ bot = Cinch::Bot.new {
     name = Smogon::Pokemon.id2name(name) if name.numeric?
 
     pokemon = Pokedex.get name.delete(?'), @storage
-    m.reply pokemon ? "#{pokemon.to_s}\n#{pokemon.url}".split("\n").map { |l| Format(:red, l) }.join("\n") : Format(:red, 'Pokémon not found.')
+    m.reply pokemon ? "#{pokemon.to_s}\n#{pokemon.url}".split("\n").map(&:colorize).join("\n") : 'Pokémon not found.'.colorize
   end
 
   on :message, /^ability (.+)/ do |m, name|   
     ability = Abilitydex.get name
     
-    m.reply ability ? "#{ability.to_s}\n#{ability.url}".split("\n").map { |l| Format(:red, l) }.join("\n") : Format(:red, 'Ability not found.')
+    m.reply ability ? "#{ability.to_s}\n#{ability.url}".split("\n").map(&:colorize).join("\n") : 'Ability not found.'.colorize
   end
 
   on :message, /^item (.+)/ do |m, name|   
     item = Itemdex.get name
     
-    m.reply item ? "#{item.to_s}\n#{item.url}".split("\n").map { |l| Format(:red, l) }.join("\n") : Format(:red, 'Item not found.')
+    m.reply item ? "#{item.to_s}\n#{item.url}".split("\n").map(&:colorize).join("\n") : 'Item not found.'.colorize
   end
 
   on :message, /^move (.+)/ do |m, name|
     move = Movedex.get name
 
-    m.reply move ? "#{move.to_s}\n#{move.url}".split("\n").map { |l| Format(:red, l) }.join("\n") : Format(:red, 'Move not found.')
+    m.reply move ? "#{move.to_s}\n#{move.url}".split("\n").map(&:colorize).join("\n") : 'Move not found.'.colorize
   end
 
   on :message, /^moveset (.+) (.+) (.+)/ do |m, name, tier, metagame|
@@ -75,10 +76,10 @@ bot = Cinch::Bot.new {
 
     movesets = Movesetdex.get name.delete(?'), tier, (metagame.empty? ? 'bw' : metagame)
     if movesets != nil || movesets.any?
-      m.reply Format(:red, "--- #{movesets.first.pokemon} (#{movesets.first.tier}) ---")
-      movesets.each { |moveset| m.reply Format(:red, " -- #{moveset.name} --\n#{moveset.to_s.split("\n").map { |l| Format(:red, l) }.join("\n")}\n") }
+      m.reply "--- #{movesets.first.pokemon} (#{movesets.first.tier}) ---".colorize
+      movesets.each { |moveset| m.reply " -- #{moveset.name} --\n#{moveset.to_s.split("\n").map(&:colorize).join("\n")}\n".colorize }
     else
-      m.reply Format(:red, 'Moveset not found.')
+      m.reply 'Moveset not found.'.colorize
     end
   end
 
@@ -104,41 +105,41 @@ bot = Cinch::Bot.new {
     @storage = Storage.new('./cache.db') unless @storage
     
     pokemon = Pokedex.get Smogon::Pokemon.id2name(Random.new.rand(1..649)).delete(?'), @storage
-    m.reply pokemon ? "#{pokemon.to_s}\n#{pokemon.url}".split("\n").map { |l| Format(:red, l) }.join("\n") : Format(:red, 'Pokémon not found.')
+    m.reply pokemon ? "#{pokemon.to_s}\n#{pokemon.url}".split("\n").map(&:colorize).join("\n") : 'Pokémon not found.'.colorize
   end
 
   on :message, /^pktrivia$/ do |m|
     @storage = Storage.new('./cache.db') unless @storage
     
     if @pokemon_trivia != nil
-      m.reply Format(:red, 'Other players are playing, please wait until they finish.')
-      m.reply Format(:red, @pokemon_trivia.clues)
+      m.reply 'Other players are playing, please wait until they finish.'.colorize
+      m.reply @pokemon_trivia.clues.colorize
     else
       @pokemon_trivia = Pokedex.get Smogon::Pokemon.id2name(Random.new.rand(1..649)).delete(?'), @storage
       @trivia_owner   = m.user.nick
       @trivia_wrong   = 0
       
       if @pokemon_trivia
-        m.reply @pokemon_trivia.clues.split("\n").map { |l| Format(:red, l) }.join("\n")
-        m.reply Format(:red, 'You have 3 chances to try to say which Pokémon is this!')
+        m.reply @pokemon_trivia.clues.split("\n").map(&:colorize).join("\n")
+        m.reply 'You have 3 chances to try to say which Pokémon is this!'.colorize
       else
-        m.reply Format(:red, 'An error is occurred searching the Pokémon.')
+        m.reply 'An error is occurred searching the Pokémon.'.colorize
       end
     end
   end
 
   on :message, /^pktrivia (.+)/ do |m, pokemon|
     if @pokemon_trivia == nil
-      m.reply Format(:red, 'You have to start the game before to play.')
+      m.reply 'You have to start the game before to play.'.colorize
     elsif pokemon.downcase == @pokemon_trivia.name.downcase
-      m.reply Format(:red, "Right, #{m.user.nick} won!")
+      m.reply "Right, #{m.user.nick} won!".colorize
       @pokemon_trivia = nil
       @trivia_wrong   = 0
     else
-      m.reply Format(:red, "Nope, #{m.user.nick} was wrong.")
+      m.reply "Nope, #{m.user.nick} was wrong.".colorize
       @trivia_wrong += 1
       if @trivia_wrong >= 3
-        m.reply Format(:red, "You have no more chances. The secret Pokémon is #{@pokemon_trivia.name}!")
+        m.reply "You have no more chances. The secret Pokémon is #{@pokemon_trivia.name}!".colorize
         @pokemon_trivia = nil
         @trivia_wrong   = 0
       end
@@ -150,22 +151,22 @@ bot = Cinch::Bot.new {
       @pokemon_trivia = nil
       @trivia_owner   = ''
       @trivia_wrong   = 0
-      m.reply Format(:red, "Game aborted by #{m.user.nick}.")
+      m.reply "Game aborted by #{m.user.nick}.".colorize
     elsif @pokemon_trivia == nil
-      m.reply Format(:red, 'Game not started yet.')
+      m.reply 'Game not started yet.'.colorize
     else
-      m.reply Format(:red, "Only channel operators and the game luncher can stop the game. #{m.user.nick} GTFO.")
+      m.reply "Only channel operators and the game luncher can stop the game. #{m.user.nick} GTFO.".colorize
     end
   end
 
   on :message, /^pkdebug$/ do |m|
     if @pokemon_trivia == nil
-      m.reply Format(:red, 'Game not started.')
+      m.reply 'Game not started.'.colorize
     elsif m.user.nick == 'mirkosp' || m.user.nick == 'RoxasShadowRS'
-      m.reply Format(:red, @pokemon_trivia.name)
+      m.reply @pokemon_trivia.name.colorize
     else
       proverbs = open('http://pastebin.com/raw.php?i=qWF65TcP').read.each_line.to_a.sample.strip
-      m.reply Format(:red, proverbs)
+      m.reply proverbs.colorize
     end
   end
   
@@ -179,29 +180,29 @@ bot = Cinch::Bot.new {
       @trivia_owner   = ''
       @trivia_wrong   = 0
       
-      m.reply Format(:red, 'Cache created.')
+      m.reply 'Cache created.'.colorize
     else
       proverbs = open('http://pastebin.com/raw.php?i=qWF65TcP').read.each_line.to_a.sample.strip
-      m.reply Format(:red, proverbs)
+      m.reply proverbs.colorize
     end
   end
 
   on :message, /^pkversion$/ do |m|
-    m.reply Format(:red, "Botémon:    #{Botemon::version}")
-    m.reply Format(:red, "Smogon-API: #{Smogon::version}")
+    m.reply "Botémon:    #{Botemon::version}".colorize
+    m.reply "Smogon-API: #{Smogon::version}".colorize
   end
 
   on :message, /^pkhelp$/ do |m|
-    m.reply Format(:red, "- pkmn     Bulbasaur                                          ")
-    m.reply Format(:red, "- pkmn     1                                                  ")
-    m.reply Format(:red, "- ability  Synchronize                                        ")
-    m.reply Format(:red, "- item     Leftovers                                          ")
-    m.reply Format(:red, "- move     Reflect                                            ")
-    m.reply Format(:red, "- moveset  Bulbasaur LC                                       ")
-    m.reply Format(:red, "- moveset  Bulbasaur LC DP                                    ")
-    m.reply Format(:red, "- pstats   Scizor 70 Adamant 0/252/0/0/6/252 15/31/30/2/31/31 ")
-    m.reply Format(:red, "- pstats   Scizor 70 Adamant 0/252/0/0/6/252                  ")
-    m.reply Format(:red, "- pkrandom, pktrivia, pkdebug, pkstop, pkcache, pkversion     ")
+    m.reply "- pkmn     Bulbasaur                                          ".colorize
+    m.reply "- pkmn     1                                                  ".colorize
+    m.reply "- ability  Synchronize                                        ".colorize
+    m.reply "- item     Leftovers                                          ".colorize
+    m.reply "- move     Reflect                                            ".colorize
+    m.reply "- moveset  Bulbasaur LC                                       ".colorize
+    m.reply "- moveset  Bulbasaur LC DP                                    ".colorize
+    m.reply "- pstats   Scizor 70 Adamant 0/252/0/0/6/252 15/31/30/2/31/31 ".colorize
+    m.reply "- pstats   Scizor 70 Adamant 0/252/0/0/6/252                  ".colorize
+    m.reply "- pkrandom, pktrivia, pkdebug, pkstop, pkcache, pkversion     ".colorize
   end
 }
 bot.start
