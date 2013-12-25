@@ -22,11 +22,11 @@ module Smogon
     attr_accessor :name, :_name, :types, :tier, :abilities, :base_stats, :moves
     
     def to_s
-      "Name: #{name}\nAbility: #{abilities.join(', ')}\nType: #{types.join(?/)}\nTier: #{tier}\nBase stats: #{base_stats.join(?/)}\nMoves: #{moves.join(', ')}"
+      "Name: #{@name}\nAbility: #{@abilities.join(', ')}\nType: #{@types.join(?/)}\nTier: #{@tier}\nBase stats: #{@base_stats.join(?/)}\nMoves: #{@moves.take(20).join(', ')}..."
     end
     
     def clues
-      "Ability: #{abilities.join(', ')}\nType: #{types.join(?/)}\nTier: #{tier}\nBase stats: #{base_stats.join(?/)}"
+      "Ability: #{@abilities.join(', ')}\nType: #{@types.join(?/)}\nTier: #{@tier}\nBase stats: #{@base_stats.join(?/)}"
     end
     
     def self.to_pokemon(ary)
@@ -42,13 +42,14 @@ module Smogon
     end
     
     def to_ary
-      { 'name'       => name,
+      {
+        'name'       => name,
         '_name'      => _name,
         'types'      => types,
         'tier'       => tier,
         'abilities'  => abilities,
         'base_stats' => base_stats,
-        'moves' => moves
+        'moves'      => moves
       }
     end
 

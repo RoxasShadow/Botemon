@@ -1,6 +1,6 @@
 # Botémon - IRC bot for Pokéfags
 
-Data are fetched from Smogon and then cached. `id -> name` conversion is performed by PokémonDB.
+Data are fetched from Smogon and then cached. `id -> name` conversion is performed from Marriland.
 
 You can try Botémon in `#task-force` and `#omnivium` at `irc.rizon.net`.
 
