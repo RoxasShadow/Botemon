@@ -19,10 +19,10 @@
 
 module Smogon
   class Pokemon
-    attr_accessor :name, :_name, :types, :tier, :abilities, :base_stats
+    attr_accessor :name, :_name, :types, :tier, :abilities, :base_stats, :moves
     
     def to_s
-      "Name: #{name}\nAbility: #{abilities.join(', ')}\nType: #{types.join(?/)}\nTier: #{tier}\nBase stats: #{base_stats.join(?/)}"
+      "Name: #{name}\nAbility: #{abilities.join(', ')}\nType: #{types.join(?/)}\nTier: #{tier}\nBase stats: #{base_stats.join(?/)}\nMoves: #{moves.join(', ')}"
     end
     
     def clues
@@ -37,6 +37,7 @@ module Smogon
         pokemon.tier       = ary['tier']
         pokemon.abilities  = ary['abilities']
         pokemon.base_stats = ary['base_stats']
+        pokemon.moves      = ary['moves']
       }
     end
     
@@ -46,7 +47,8 @@ module Smogon
         'types'      => types,
         'tier'       => tier,
         'abilities'  => abilities,
-        'base_stats' => base_stats
+        'base_stats' => base_stats,
+        'moves' => moves
       }
     end
 

@@ -7,7 +7,7 @@ You can try Botémon in `#task-force` and `#omnivium` at `irc.rizon.net`.
 
 `Installation: [sudo] gem install botemon`
 
-`Usage: botemon <bot_name> <server> <channels>`
+`Usage: botemon <bot_name> <bot_password> <server> <channels>`
 
 
 - pkmn Bulbasaur

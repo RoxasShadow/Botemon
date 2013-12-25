@@ -22,19 +22,19 @@
 require 'botemon'
 require 'open-uri'
 
-abort 'Usage: botemon <bot_name> <server> <channels>' if ARGV.length < 3
+abort 'Usage: botemon <bot_name> <bot_password> <server> <channels>' if ARGV.length < 4
 
 bot = Cinch::Bot.new {
   configure do |c|
     c.nick     = ARGV[0]
     c.realname = ARGV[0]
     c.user     = ARGV[0]
-    c.password = 'dat_password'
-    c.server   = ARGV[1]
-    c.channels = ARGV.drop(2).map { |c| "\##{c}" }
+    c.password = ARGV[1]
+    c.server   = ARGV[2]
+    c.channels = ARGV.drop(3).map { |c| "\##{c}" }
     
     c.plugins.plugins = [Cinch::Plugins::Login]
-    c.plugins.options[Cinch::Plugins::Login] = { :password => 'dat_password' }
+    c.plugins.options[Cinch::Plugins::Login] = { :password => ARGV[1] }
     
     @storage        = Storage.new './cache.db'
     @pokemon_trivia = nil
