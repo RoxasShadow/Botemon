@@ -22,7 +22,7 @@ module Smogon
     attr_accessor :name, :_name, :types, :tier, :abilities, :base_stats, :moves
     
     def to_s
-      "Name: #{@name}\nAbility: #{@abilities.join(', ')}\nType: #{@types.join(?/)}\nTier: #{@tier}\nBase stats: #{@base_stats.join(?/)}\nMoves: #{@moves.take(20).join(', ')}..."
+      "Name: #{@name}\nAbility: #{@abilities.join(', ')}\nType: #{@types.join(?/)}\nTier: #{@tier}\nBase stats: #{@base_stats.join(?/)}\nMoves: #{@moves.join(', ')}"
     end
     
     def clues
