@@ -15,10 +15,10 @@ Gem::Specification.new { |s|
 	s.files         = Dir.glob('lib/**/*.rb')
  	s.executables   = 'botemon'
 
-	s.add_runtime_dependency 'nokogiri'
-	s.add_runtime_dependency 'sanitize'
-	s.add_runtime_dependency 'cinch'
-	s.add_runtime_dependency 'cinch-login'
-	s.add_runtime_dependency 'cinch-colorize'
-	s.add_runtime_dependency 'smogon'
+	s.add_dependency 'nokogiri'
+	s.add_dependency 'sanitize'
+	s.add_dependency 'cinch'
+	s.add_dependency 'cinch-login'
+	s.add_dependency 'cinch-colorize'
+	s.add_dependency 'smogon'
 }

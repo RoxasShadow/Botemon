@@ -21,35 +21,31 @@ module Smogon
   class Pokemon
     attr_accessor :name, :_name, :types, :tier, :abilities, :base_stats, :moves
     
-    def to_s
-      "Name: #{@name}\nAbility: #{@abilities.join(', ')}\nType: #{@types.join(?/)}\nTier: #{@tier}\nBase stats: #{@base_stats.join(?/)}\nMoves: #{@moves.join(', ')}"
-    end
-    
     def clues
       "Ability: #{@abilities.join(', ')}\nType: #{@types.join(?/)}\nTier: #{@tier}\nBase stats: #{@base_stats.join(?/)}"
     end
     
     def self.to_pokemon(ary)
       return Pokemon.new.tap { |pokemon|
-        pokemon.name       = ary['name']
-        pokemon._name      = ary['_name']
-        pokemon.types      = ary['types']
-        pokemon.tier       = ary['tier']
-        pokemon.abilities  = ary['abilities']
+        pokemon.name       = ary['name'      ]
+        pokemon._name      = ary['_name'     ]
+        pokemon.types      = ary['types'     ]
+        pokemon.tier       = ary['tier'      ]
+        pokemon.abilities  = ary['abilities' ]
         pokemon.base_stats = ary['base_stats']
-        pokemon.moves      = ary['moves']
+        pokemon.moves      = ary['moves'     ]
       }
     end
     
     def to_ary
       {
-        'name'       => name,
-        '_name'      => _name,
-        'types'      => types,
-        'tier'       => tier,
-        'abilities'  => abilities,
-        'base_stats' => base_stats,
-        'moves'      => moves
+        'name'       => @name,
+        '_name'      => @_name,
+        'types'      => @types,
+        'tier'       => @tier,
+        'abilities'  => @abilities,
+        'base_stats' => @base_stats,
+        'moves'      => @moves
       }
     end
 

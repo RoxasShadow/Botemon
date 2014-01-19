@@ -1,5 +1,4 @@
 #!/usr/bin/env ruby
-#encoding: utf-8
 #--
 # Copyright(C) 2013 Giovanni Capuano <webmaster@giovannicapuano.net>
 #
@@ -25,7 +24,7 @@ require 'cinch/colorize'
 
 abort 'Usage: botemon <bot_name> <bot_password> <server> <channels>' if ARGV.length < 4
 
-bot = Cinch::Bot.new {
+Cinch::Bot.new {
   configure do |c|
     c.nick     = ARGV[0]
     c.realname = ARGV[0]
@@ -204,5 +203,4 @@ bot = Cinch::Bot.new {
     m.reply "- pstats   Scizor 70 Adamant 0/252/0/0/6/252                  ".colorize
     m.reply "- pkrandom, pktrivia, pkdebug, pkstop, pkcache, pkversion     ".colorize
   end
-}
-bot.start
+}.start
