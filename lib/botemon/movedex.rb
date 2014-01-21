@@ -19,7 +19,6 @@
 
 class Movedex    
   def self.get(name)
-    return nil if name == nil
-    return Smogon::Movedex.get name
+    name ? Smogon::Movedex.get(name) : nil
   end
 end

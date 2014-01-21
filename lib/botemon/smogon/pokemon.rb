@@ -26,7 +26,7 @@ module Smogon
     end
     
     def self.to_pokemon(ary)
-      return Pokemon.new.tap { |pokemon|
+      Pokemon.new.tap { |pokemon|
         pokemon.name       = ary['name'      ]
         pokemon._name      = ary['_name'     ]
         pokemon.types      = ary['types'     ]

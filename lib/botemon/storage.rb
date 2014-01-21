@@ -28,12 +28,12 @@ class Storage
   end
   
   def is_cached?(name)
-    return @db.select { |p| p._name == name.downcase }.any?
+    @db.select { |p| p._name == name.downcase }.any?
   end
   alias :include? :is_cached?
   
   def get(name)
-    return @db.select { |p| p._name == name.downcase }.first
+    @db.select { |p| p._name == name.downcase }.first
   end
   
   def get_all

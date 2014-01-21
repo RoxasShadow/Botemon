@@ -19,6 +19,6 @@
 
 class Abilitydex    
   def self.get(name)
-    return name ? Smogon::Abilitydex.get(name) : nil
+    name ? Smogon::Abilitydex.get(name) : nil
   end
 end

@@ -19,6 +19,6 @@
 
 class Itemdex    
   def self.get(name)
-    return name ? Smogon::Itemdex.get(name) : nil
+    name ? Smogon::Itemdex.get(name) : nil
   end
 end

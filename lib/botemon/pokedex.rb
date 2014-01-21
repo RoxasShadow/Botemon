@@ -22,7 +22,7 @@ class Pokedex
     return nil if name == nil
     return storage.get(name) if storage.is_cached? name
     
-    return Smogon::Pokedex.get(name).tap { |pokemon|
+    Smogon::Pokedex.get(name).tap { |pokemon|
       storage.add pokemon
       storage.save
     }
