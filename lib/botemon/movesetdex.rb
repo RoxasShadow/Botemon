@@ -1,5 +1,5 @@
 #--
-# Copyright(C) 2013 Giovanni Capuano <webmaster@giovannicapuano.net>
+# Copyright(C) 2015 Giovanni Capuano <webmaster@giovannicapuano.net>
 #
 # This file is part of Botémon.
 #
@@ -17,8 +17,8 @@
 # along with Botémon.  If not, see <http://www.gnu.org/licenses/>.
 #++
 
-class Movesetdex    
+class Movesetdex
   def self.get(name, tier, metagame)
-    name && tier ? Smogon::Movesetdex.get(name, tier, metagame) : nil
+    name ? Smogon::Movesetdex.get(name, tier, metagame) : nil
   end
 end

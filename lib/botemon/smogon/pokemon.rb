@@ -1,5 +1,5 @@
 #--
-# Copyright(C) 2013 Giovanni Capuano <webmaster@giovannicapuano.net>
+# Copyright(C) 2015 Giovanni Capuano <webmaster@giovannicapuano.net>
 #
 # This file is part of Botémon.
 #
@@ -20,11 +20,11 @@
 module Smogon
   class Pokemon
     attr_accessor :name, :_name, :types, :tier, :abilities, :base_stats, :moves
-    
+
     def clues
       "Ability: #{@abilities.join(', ')}\nType: #{@types.join(?/)}\nTier: #{@tier}\nBase stats: #{@base_stats.join(?/)}"
     end
-    
+
     def self.to_pokemon(ary)
       Pokemon.new.tap { |pokemon|
         pokemon.name       = ary['name'      ]
@@ -36,7 +36,7 @@ module Smogon
         pokemon.moves      = ary['moves'     ]
       }
     end
-    
+
     def to_ary
       {
         'name'       => @name,

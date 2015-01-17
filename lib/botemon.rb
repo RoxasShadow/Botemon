@@ -18,8 +18,6 @@
 #++
 
 require 'open-uri'
-require 'nokogiri'
-require 'sanitize'
 require 'json'
 
 require 'cinch'

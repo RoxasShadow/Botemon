@@ -1,5 +1,5 @@
 #--
-# Copyright(C) 2013 Giovanni Capuano <webmaster@giovannicapuano.net>
+# Copyright(C) 2015 Giovanni Capuano <webmaster@giovannicapuano.net>
 #
 # This file is part of Botémon.
 #
@@ -27,10 +27,9 @@ module Smogon
       @nature  = []
       @moves   = []
     end
-    
-    def to_s
-      "Item: #{item.join(' / ')}\nAbility: #{ability.join(' / ')}\nNature: #{nature.join(' / ')}\nMoves: #{''.tap { |s| moves.each { |move| s << move.join(' / ') + ', '}}[0..-3]}\nEVs: #{evs}"
-    end
-    
+
+    # def to_s
+    #   "Set: #{@name}\nItem: #{@item.join(' / ')}\nAbility: #{@ability.join(' / ')}\nNature: #{@nature.join(' / ')}\nMoves: #{''.tap { |s| @moves.each { |move| s << move.join(' / ') + ', '}}[0..-3]}\nEVs: #{@evs}"
+    # end
   end
 end

@@ -32,10 +32,10 @@ Cinch::Bot.new {
     c.password = ARGV[1]
     c.server   = ARGV[2]
     c.channels = ARGV.drop(3).map { |c| "\##{c}" }
-    
+
     c.plugins.plugins = [Cinch::Plugins::Login]
     c.plugins.options[Cinch::Plugins::Login] = { :password => ARGV[1] }
-    
+
     @storage        = Storage.new './cache.db'
     @pokemon_trivia = nil
     @players        = []
@@ -45,22 +45,22 @@ Cinch::Bot.new {
 
   on :message, /^pkmn (.+)/ do |m, name|
     @storage = Storage.new('./cache.db') unless @storage
-    
+
     name = Smogon::Pokemon.id2name(name) if name.numeric?
 
-    pokemon = Pokedex.get name.delete(?'), @storage
+    pokemon = Pokedex.get name, @storage
     m.reply pokemon ? "#{pokemon.to_s}\n#{pokemon.url}".split("\n").map(&:colorize).join("\n") : 'Pokémon not found.'.colorize
   end
 
-  on :message, /^ability (.+)/ do |m, name|   
+  on :message, /^ability (.+)/ do |m, name|
     ability = Abilitydex.get name
-    
+
     m.reply ability ? "#{ability.to_s}\n#{ability.url}".split("\n").map(&:colorize).join("\n") : 'Ability not found.'.colorize
   end
 
-  on :message, /^item (.+)/ do |m, name|   
+  on :message, /^item (.+)/ do |m, name|
     item = Itemdex.get name
-    
+
     m.reply item ? "#{item.to_s}\n#{item.url}".split("\n").map(&:colorize).join("\n") : 'Item not found.'.colorize
   end
 
@@ -73,10 +73,16 @@ Cinch::Bot.new {
   on :message, /^moveset (.+) (.+) (.+)/ do |m, name, tier, metagame|
     name = Smogon::Pokemon.id2name(name) if name.numeric?
 
-    movesets = Movesetdex.get name.delete(?'), tier, (metagame.empty? ? 'bw' : metagame)
-    if movesets != nil || movesets.any?
-      m.reply "--- #{movesets.first.pokemon} (#{movesets.first.tier}) ---".colorize
-      movesets.each { |moveset| m.reply " -- #{moveset.name} --\n#{moveset.to_s.split("\n").map(&:colorize).join("\n")}\n".colorize }
+    tier     = nil if tier.empty?
+    metagame = nil if metagame.empty?
+
+    movesets = Movesetdex.get name, tier, metagame
+    if movesets && movesets.any?
+      m.reply "--- #{movesets.first.pokemon} ---".colorize
+
+      movesets.each do |moveset|
+        m.reply " -- #{moveset.name} (#{moveset.tier}) --\n#{moveset.to_s.split("\n").map(&:colorize).join("\n")}\n"
+      end
     else
       m.reply 'Moveset not found.'.colorize
     end
@@ -86,7 +92,7 @@ Cinch::Bot.new {
     @storage = Storage.new('./cache.db') unless @storage
 
     name    = Smogon::Pokemon.id2name(name) if name.numeric?
-    pokemon = Pokedex.get name.delete(?'), @storage
+    pokemon = Pokedex.get name, @storage
 
     hidden_values = evs.strip.split
     if hidden_values.length == 2
@@ -96,28 +102,28 @@ Cinch::Bot.new {
       evs = evs.split                 ?/
       ivs = '31/31/31/31/31/31'.split ?/
     end
-    
+
     m.reply "#{pokemon.name}: (#{pokemon.types.join(?-)}) #{pokemon.stats(level.to_i, nature, evs, ivs).join(?/)}"
   end
 
   on :message, /^pkrandom$/ do |m|
     @storage = Storage.new('./cache.db') unless @storage
-    
-    pokemon = Pokedex.get Smogon::Pokemon.id2name(Random.new.rand(1..649)).delete(?'), @storage
+
+    pokemon = Pokedex.get Smogon::Pokemon.id2name(Random.new.rand(1..649)), @storage
     m.reply pokemon ? "#{pokemon.to_s}\n#{pokemon.url}".split("\n").map(&:colorize).join("\n") : 'Pokémon not found.'.colorize
   end
 
   on :message, /^pktrivia$/ do |m|
     @storage = Storage.new('./cache.db') unless @storage
-    
+
     if @pokemon_trivia != nil
       m.reply 'Other players are playing, please wait until they finish.'.colorize
       m.reply @pokemon_trivia.clues.colorize
     else
-      @pokemon_trivia = Pokedex.get Smogon::Pokemon.id2name(Random.new.rand(1..649)).delete(?'), @storage
+      @pokemon_trivia = Pokedex.get Smogon::Pokemon.id2name(Random.new.rand(1..649)), @storage
       @trivia_owner   = m.user.nick
       @trivia_wrong   = 0
-      
+
       if @pokemon_trivia
         m.reply @pokemon_trivia.clues.split("\n").map(&:colorize).join("\n")
         m.reply 'You have 3 chances to try to say which Pokémon is this!'.colorize
@@ -168,17 +174,17 @@ Cinch::Bot.new {
       m.reply proverbs.colorize
     end
   end
-  
+
   on :message, /^pkcache$/ do |m|
     if m.user.nick.to_s.oper? bot
       File.delete('./cache.db') if File.exists? './cache.db'
-      
+
       @storage        = Storage.new './cache.db'
       @pokemon_trivia = nil
       @players        = []
       @trivia_owner   = ''
       @trivia_wrong   = 0
-      
+
       m.reply 'Cache created.'.colorize
     else
       proverbs = open('http://pastebin.com/raw.php?i=qWF65TcP').read.each_line.to_a.sample.strip
@@ -187,8 +193,8 @@ Cinch::Bot.new {
   end
 
   on :message, /^pkversion$/ do |m|
-    m.reply "Botémon:    #{Botemon::version}".colorize
-    m.reply "Smogon-API: #{Smogon::version}".colorize
+    m.reply "Botémon:    #{Botemon::VERSION}".colorize
+    m.reply "Smogon-API: #{Smogon::VERSION}".colorize
   end
 
   on :message, /^pkhelp$/ do |m|

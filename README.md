@@ -1,11 +1,11 @@
 # Botémon - IRC bot for Pokéfags
 
-Data are fetched from [Smogon](https://github.com/RoxasShadow/Smogon) and then cached. `id -> name` conversion is performed from Marriland.
+Data are fetched from [Smogon](https://github.com/RoxasShadow/Smogon) and then cached. `id -> name` conversion is performed by Marriland.
 
-You can try Botémon in `#task-force` and `#omnivium` at `irc.rizon.net`.
+You can try Botémon in `#owarisubs`, `#task-force` and `#omnivium` at `irc.rizon.net`.
 
 
-`Installation: [sudo] gem install botemon`
+`Installation: gem install botemon`
 
 `Usage: botemon <bot_name> <bot_password> <server> <channels>`
 
@@ -26,13 +26,13 @@ You can try Botémon in `#task-force` and `#omnivium` at `irc.rizon.net`.
   * Request the description of the given move.
 
 - moveset Bulbasaur LC BW
-  * Request Smogon movesets by name, tier and metagame (it's optional, by default it's bw).
+  * Request Smogon movesets by name, tier and metagame (only the first one is required).
 
 - pstats Scizor 70 Adamant 0/252/0/0/6/252 15/31/30/2/31/31
-  * Calculate the final stats of a level 70 scizor with the given EVs and IVs.
+  * Calculate the final stats of a level 70 Scizor with the given EVs and IVs.
 
 - pstats Scizor 70 Adamant 0/252/0/0/6/252
-  * Calculate the final stats of a level 70 scizor with the given EVs and all the IVs set to 31.
+  * Calculate the final stats of a level 70 Scizor with the given EVs and all the IVs set to 31.
 
 - pkrandom
   * Get infos about a random Pokémon.
@@ -53,8 +53,7 @@ You can try Botémon in `#task-force` and `#omnivium` at `irc.rizon.net`.
   * Create a new cache. Only for channel operators.
 
 - pkhelp
-  * Print all available commands
+  * Print all available commands.
 
 - pkversion
-  * Print the version of Botémon.
-
+  * Print the version of both Botémon and [Smogon](https://github.com/RoxasShadow/Smogon).
