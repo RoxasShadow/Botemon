@@ -17,7 +17,7 @@
 # along with Botémon.  If not, see <http://www.gnu.org/licenses/>.
 #++
 
-class Abilitydex    
+class Abilitydex
   def self.get(name)
     name ? Smogon::Abilitydex.get(name) : nil
   end

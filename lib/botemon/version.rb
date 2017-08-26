@@ -1,5 +1,5 @@
 #--
-# Copyright(C) 2015 Giovanni Capuano <webmaster@giovannicapuano.net>
+# Copyright(C) 2017 Giovanni Capuano <webmaster@giovannicapuano.net>
 #
 # This file is part of Botémon.
 #
@@ -18,5 +18,5 @@
 #++
 
 module Botemon
-  VERSION = '0.7'
+  VERSION = '0.8'
 end

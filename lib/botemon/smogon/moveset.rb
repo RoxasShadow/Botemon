@@ -1,5 +1,5 @@
 #--
-# Copyright(C) 2015 Giovanni Capuano <webmaster@giovannicapuano.net>
+# Copyright(C) 2017 Giovanni Capuano <webmaster@giovannicapuano.net>
 #
 # This file is part of Botémon.
 #
@@ -19,13 +19,13 @@
 
 module Smogon
   class Moveset
-    attr_accessor :pokemon, :name, :tier, :item, :ability, :nature, :moves, :evs
+    attr_accessor :pokemon, :name, :tier, :items, :abilities, :natures, :moves, :ivs, :evs
 
     def initialize
-      @item    = []
-      @ability = []
-      @nature  = []
-      @moves   = []
+      @items     = []
+      @abilities = []
+      @natures   = []
+      @moves     = []
     end
 
     # def to_s

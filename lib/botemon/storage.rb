@@ -19,34 +19,36 @@
 
 class Storage
   attr_accessor :file, :db
-  
+
   def initialize(file)
     @file = file
     @db = [].tap { |db|
-      (File.exists?(file) ? JSON.load(File.read(file)) : []).each { |p| db << Smogon::Pokemon.to_pokemon(p) }
+      (File.exists?(file) ? JSON.load(File.read(file)) : []).each { |p| db << Smogon::Type::Pokemon.to_pokemon(p) }
     }
   end
-  
+
   def is_cached?(name)
-    @db.select { |p| p._name == name.downcase }.any?
+    name = name.downcase
+    @db.select { |p| p.name == name }.any?
   end
   alias :include? :is_cached?
-  
+
   def get(name)
-    @db.select { |p| p._name == name.downcase }.first
+    name = name.downcase
+    @db.select { |p| p.name == name }.first
   end
-  
+
   def get_all
     @db
   end
   alias :dump :get_all
-  
+
   def add(pokemon)
     return unless pokemon
     @db << pokemon unless is_cached?(pokemon.name)
   end
   alias :put :add
-  
+
   def save
     [].tap { |ary|
       @db.each { |p| ary << p.to_ary }

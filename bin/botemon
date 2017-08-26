@@ -46,7 +46,7 @@ Cinch::Bot.new {
   on :message, /^pkmn (.+)/ do |m, name|
     @storage = Storage.new('./cache.db') unless @storage
 
-    name = Smogon::Pokemon.id2name(name) if name.numeric?
+    name = Smogon::Type::Pokemon.id2name(name) if name.numeric?
 
     pokemon = Pokedex.get name, @storage
     m.reply pokemon ? "#{pokemon.to_s}\n#{pokemon.url}".split("\n").map(&:colorize).join("\n") : 'Pokémon not found.'.colorize
@@ -71,7 +71,7 @@ Cinch::Bot.new {
   end
 
   on :message, /^moveset (.+) (.+) (.+)/ do |m, name, tier, metagame|
-    name = Smogon::Pokemon.id2name(name) if name.numeric?
+    name = Smogon::Type::Pokemon.id2name(name) if name.numeric?
 
     tier     = nil if tier.empty?
     metagame = nil if metagame.empty?
@@ -91,7 +91,7 @@ Cinch::Bot.new {
   on :message, /^pstats (\S*) (\S*) (\S*) (.*)/ do |m, name, level, nature, evs|
     @storage = Storage.new('./cache.db') unless @storage
 
-    name    = Smogon::Pokemon.id2name(name) if name.numeric?
+    name    = Smogon::Type::Pokemon.id2name(name) if name.numeric?
     pokemon = Pokedex.get name, @storage
 
     hidden_values = evs.strip.split
@@ -109,7 +109,7 @@ Cinch::Bot.new {
   on :message, /^pkrandom$/ do |m|
     @storage = Storage.new('./cache.db') unless @storage
 
-    pokemon = Pokedex.get Smogon::Pokemon.id2name(Random.new.rand(1..649)), @storage
+    pokemon = Pokedex.get Smogon::Type::Pokemon.id2name(Random.new.rand(1..649)), @storage
     m.reply pokemon ? "#{pokemon.to_s}\n#{pokemon.url}".split("\n").map(&:colorize).join("\n") : 'Pokémon not found.'.colorize
   end
 
@@ -120,7 +120,7 @@ Cinch::Bot.new {
       m.reply 'Other players are playing, please wait until they finish.'.colorize
       m.reply @pokemon_trivia.clues.colorize
     else
-      @pokemon_trivia = Pokedex.get Smogon::Pokemon.id2name(Random.new.rand(1..649)), @storage
+      @pokemon_trivia = Pokedex.get Smogon::Type::Pokemon.id2name(Random.new.rand(1..649)), @storage
       @trivia_owner   = m.user.nick
       @trivia_wrong   = 0
 
@@ -198,15 +198,15 @@ Cinch::Bot.new {
   end
 
   on :message, /^pkhelp$/ do |m|
-    m.reply "- pkmn     Bulbasaur                                          ".colorize
-    m.reply "- pkmn     1                                                  ".colorize
-    m.reply "- ability  Synchronize                                        ".colorize
-    m.reply "- item     Leftovers                                          ".colorize
-    m.reply "- move     Reflect                                            ".colorize
-    m.reply "- moveset  Bulbasaur LC                                       ".colorize
-    m.reply "- moveset  Bulbasaur LC DP                                    ".colorize
-    m.reply "- pstats   Scizor 70 Adamant 0/252/0/0/6/252 15/31/30/2/31/31 ".colorize
-    m.reply "- pstats   Scizor 70 Adamant 0/252/0/0/6/252                  ".colorize
-    m.reply "- pkrandom, pktrivia, pkdebug, pkstop, pkcache, pkversion     ".colorize
+    m.reply "- pkmn Bulbasaur                                             ".colorize
+    m.reply "- pkmn 1                                                     ".colorize
+    m.reply "- ability Synchronize                                        ".colorize
+    m.reply "- item Leftovers                                             ".colorize
+    m.reply "- move Reflect                                               ".colorize
+    m.reply "- moveset Bulbasaur LC                                       ".colorize
+    m.reply "- moveset Bulbasaur LC DP                                    ".colorize
+    m.reply "- pstats Scizor 70 Adamant 0/252/0/0/6/252 15/31/30/2/31/31  ".colorize
+    m.reply "- pstats Scizor 70 Adamant 0/252/0/0/6/252                   ".colorize
+    m.reply "- pkrandom, pktrivia, pkdebug, pkstop, pkcache, pkversion    ".colorize
   end
 }.start
